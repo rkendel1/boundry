@@ -42,6 +42,7 @@ Add `boundry.company` (and `www.boundry.company` redirecting to it) under Projec
 ## Adding a product
 
 1. Add the product to the design foundation first (accent in `brand.json`, entry in `brand.js`; see stack-ui `docs/release.md`) and vendor that release.
+1. Add its logo as `static/images/products/<id>.png` (square, from the product's own repository).
 1. Add an entry to `content/products.json` (`id`, `name`, `category`, `summary`, `responsibility` required; `url` may be `null`). The build fails if it is not in the shared portfolio or its name differs.
 2. Optionally place its `id` in `site.json → architecture.rows` (or as `side`).
 3. Run the build. The product appears on Home, Ecosystem, Architecture, Investors, Contact and the footer.
@@ -54,6 +55,5 @@ The build fails on missing fields, duplicate ids, non-https URLs, unknown status
 - **Development status.** Every product's `status` is `null`, so the Investors page shows "Shared in discussion". Set `available`, `preview`, `in-development` or `planned` only where it reflects reality.
 - **Founder portrait.** None is published. To add one, put the supplied photo in `static/images/` and set `founder.portrait` in `site.json` (e.g. `"/images/randy-kendel.jpg"`, ideally 4:5). The build fails if the file is missing. Do not substitute a generated image.
 - **AppPort** has no public website (`url: null`); it links to its Ecosystem entry instead.
-- **AgentBoundry**: agentboundry.com did not resolve on 2026-11-01, so its `url` is `null` and it links to its Ecosystem entry. Set the URL once the domain serves a site (and update the design foundation's `brand.js`).
 - **Logo master file.** The mark in `vendor/stack-ui/brand/` is a vector redraw of the supplied logo; commit the master artwork to stack-ui to replace it.
 - **Theme preference key changed** from `theme` to `stack-ui.theme` (shared by every Boundry site). A visitor's earlier manual choice is not carried over; the default is still the system theme.

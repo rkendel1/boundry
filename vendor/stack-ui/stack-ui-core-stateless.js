@@ -287,7 +287,6 @@ const PORTFOLIO = Object.freeze({
     { id: 'feltkit', name: 'FeltKit', mark: 'FK', category: 'Developer platform', href: 'https://getfeltkit.com' },
     { id: 'appboundry', name: 'AppBoundry', mark: 'AB', category: 'Application boundaries', href: 'https://appboundry.com' },
     { id: 'authboundry', name: 'AuthBoundry', mark: 'AU', category: 'Authority and delegation', href: 'https://authboundry.com' },
-    { id: 'agentboundry', name: 'AgentBoundry', mark: 'AG', category: 'Agent infrastructure', href: 'https://boundry.company/ecosystem/#agentboundry' },
     { id: 'appport', name: 'AppPort', mark: 'AP', category: 'Application capabilities', href: 'https://boundry.company/ecosystem/#appport' },
   ].map((product) => Object.freeze(product))),
 });

@@ -533,9 +533,9 @@ textarea.stack-field__control { min-height: calc(var(--stack-size-control-md) * 
 }
 .stack-site-header__family { color: var(--stack-color-text-muted); font-size: var(--stack-text-xs-size); text-decoration: none; white-space: nowrap; }
 .stack-site-header__family:hover { color: var(--stack-color-text-default); text-decoration: underline; }
-.stack-site-header__nav { margin-left: auto; min-width: 0; }
+.stack-site-header .stack-site-header__nav { margin-left: auto; min-width: 0; }
 .stack-site-header__nav-list { display: flex; gap: var(--stack-space-1); margin: 0; padding: 0; list-style: none; }
-.stack-site-header__nav-item {
+.stack-site-header .stack-site-header__nav-item {
   display: block; padding: var(--stack-space-2) var(--stack-space-3); border-radius: var(--stack-radius-md);
   color: var(--stack-color-text-muted); text-decoration: none; font-size: var(--stack-text-md-size); white-space: nowrap;
 }
@@ -545,11 +545,20 @@ textarea.stack-field__control { min-height: calc(var(--stack-size-control-md) * 
 @media (max-width: 860px) {
   .stack-site-header__inner { padding-top: var(--stack-space-3); padding-bottom: 0; }
   .stack-site-header__end { margin-left: auto; }
-  .stack-site-header__nav { order: 3; flex: 1 0 100%; margin: 0 calc(-1 * clamp(var(--stack-space-4), 4vw, var(--stack-space-10))); overflow-x: auto; }
+  .stack-site-header .stack-site-header__nav { order: 3; flex: 1 0 100%; margin: 0 calc(-1 * clamp(var(--stack-space-4), 4vw, var(--stack-space-10))); overflow-x: auto; }
   .stack-site-header__nav-list { padding: 0 clamp(var(--stack-space-4), 4vw, var(--stack-space-10)) var(--stack-space-1); }
-  .stack-site-header__nav-item { padding: var(--stack-space-2); }
+  .stack-site-header .stack-site-header__nav-item { padding: var(--stack-space-2); }
 }
 
+/* Shared site chrome sits inside product pages whose stylesheets may style
+   bare elements (nav, footer, a, p). The header and footer set every layout
+   and text property they depend on, so a product's element rules cannot
+   reshape them. */
+.stack-site-header, .stack-site-footer { display: block; height: auto; padding: 0; margin: 0; text-align: left; text-transform: none; letter-spacing: normal; }
+.stack-site-header nav, .stack-site-footer nav { display: block; gap: normal; padding: 0; margin: 0; border: 0; background: none; position: static; width: auto; height: auto; }
+.stack-site-header a, .stack-site-footer a { text-transform: none; letter-spacing: normal; border: 0; font-weight: inherit; }
+.stack-site-footer p, .stack-site-footer ul, .stack-site-footer li { text-align: left; }
+.stack-site-footer__link, .stack-site-footer__company, .stack-site-footer__legal a { padding: 0; }
 .stack-site-footer {
   border-top: var(--stack-border-width-thin) solid var(--stack-color-border-default); background: var(--stack-color-bg-sunken);
   color: var(--stack-color-text-muted); font-family: var(--stack-font-family-sans); font-size: var(--stack-text-md-size); line-height: var(--stack-text-md-line);
@@ -565,14 +574,15 @@ textarea.stack-field__control { min-height: calc(var(--stack-size-control-md) * 
 .stack-site-footer a { color: inherit; text-underline-offset: 3px; }
 .stack-site-footer__link { text-decoration: none; overflow-wrap: anywhere; }
 .stack-site-footer__link:hover { color: var(--stack-color-text-default); text-decoration: underline; }
-.stack-site-footer__family { margin-top: var(--stack-space-10); padding-top: var(--stack-space-6); border-top: var(--stack-border-width-thin) solid var(--stack-color-border-default); }
+.stack-site-footer .stack-site-footer__family { margin-top: var(--stack-space-10); padding-top: var(--stack-space-6); border-top: var(--stack-border-width-thin) solid var(--stack-color-border-default); }
 .stack-site-footer__company { display: inline-flex; align-items: center; gap: var(--stack-space-2); color: var(--stack-color-text-default) !important; font-weight: var(--stack-font-weight-semibold); text-decoration: none; }
 .stack-site-footer__company:hover { text-decoration: underline; }
 .stack-site-footer__mark { width: 20px; }
 .stack-site-footer__products { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: var(--stack-space-2) var(--stack-space-4); margin-top: var(--stack-space-4); }
-.stack-site-footer__product {
+.stack-site-footer .stack-site-footer__product {
   display: flex; flex-direction: column; padding: var(--stack-space-2) 0 var(--stack-space-2) var(--stack-space-3);
-  border-left: var(--stack-border-width-thick) solid var(--stack-product-accent); text-decoration: none;
+  align-items: flex-start; gap: 0; white-space: normal;
+  border: 0; border-left: var(--stack-border-width-thick) solid var(--stack-product-accent); text-decoration: none;
 }
 .stack-site-footer__product-name { color: var(--stack-color-text-default); font-weight: var(--stack-font-weight-semibold); }
 .stack-site-footer__product-category { font-size: var(--stack-text-sm-size); }
