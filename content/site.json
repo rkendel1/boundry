@@ -1,0 +1,54 @@
+{
+  "_readme": "Company-level settings. contact.email is used for every mailto link on the site — confirm it before launch.",
+  "name": "Boundry",
+  "domain": "boundry.company",
+  "origin": "https://boundry.company",
+  "tagline": "Infrastructure for applications and agents.",
+  "description": "Boundry builds infrastructure for applications and agents: durable state, application capabilities, boundaries, authority and delegation, and agent execution.",
+  "contact": {
+    "email": "hello@boundry.company",
+    "inquiries": [
+      {
+        "id": "commercial",
+        "title": "Commercial inquiries",
+        "body": "Evaluating a Boundry product for your organization, or interested in working with us commercially.",
+        "subject": "Commercial inquiry"
+      },
+      {
+        "id": "partnerships",
+        "title": "Developer and technical partnerships",
+        "body": "Building on, integrating with, or contributing to Boundry technology.",
+        "subject": "Technical partnership"
+      },
+      {
+        "id": "investors",
+        "title": "Investment discussions",
+        "body": "Investors interested in Boundry's thesis, portfolio, and direction.",
+        "subject": "Investment discussion"
+      },
+      {
+        "id": "general",
+        "title": "General inquiries",
+        "body": "Press, recruiting, and anything else about the company.",
+        "subject": "General inquiry"
+      }
+    ]
+  },
+  "productStatuses": {
+    "available": "Available",
+    "preview": "Preview",
+    "in-development": "In development",
+    "planned": "Planned"
+  },
+  "architecture": {
+    "_readme": "Rows are drawn top to bottom. 'side' spans the full height of the diagram.",
+    "top": "People and agents",
+    "rows": [
+      ["agentboundry"],
+      ["appport", "authboundry"],
+      ["appboundry"],
+      ["feltdb"]
+    ],
+    "side": "feltkit"
+  }
+}

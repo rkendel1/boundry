@@ -1,0 +1,71 @@
+{
+  "_readme": "The Boundry product directory. Adding an entry here adds the product to the homepage, Ecosystem, Investors, footer and sitemap on the next build. Only 'id', 'name', 'category', 'summary' and 'responsibility' are required. 'url' may be null when a product has no public site. 'status' must be one of the values in site.json → productStatuses, or null if not yet confirmed for publication. To place a product in the architecture diagram, add its id to site.json → architecture.",
+  "products": [
+    {
+      "id": "feltdb",
+      "name": "FeltDB",
+      "mark": "FD",
+      "category": "Durable state",
+      "summary": "A database and application control plane providing durable state and the foundation for applications and agents.",
+      "responsibility": "Durable state and control plane",
+      "url": "https://feltdb.com",
+      "accent": { "light": "#7a5c3e", "dark": "#c9a47e" },
+      "status": null
+    },
+    {
+      "id": "appport",
+      "name": "AppPort",
+      "mark": "AP",
+      "category": "Application capabilities",
+      "summary": "A capability catalog and protocol that makes application functionality discoverable and usable by agents, with semantic and authority metadata.",
+      "responsibility": "Capability discovery and invocation",
+      "url": null,
+      "accent": { "light": "#2f6584", "dark": "#7fb3d1" },
+      "status": null
+    },
+    {
+      "id": "appboundry",
+      "name": "AppBoundry",
+      "mark": "AB",
+      "category": "Application boundaries",
+      "summary": "Technology for application isolation, capability discovery, and portability.",
+      "responsibility": "Application boundary and portability",
+      "url": "https://appboundry.com",
+      "accent": { "light": "#3d6b4f", "dark": "#8cc4a1" },
+      "status": null
+    },
+    {
+      "id": "authboundry",
+      "name": "AuthBoundry",
+      "mark": "AU",
+      "category": "Authority and delegation",
+      "summary": "Infrastructure for authorization, delegated authority, and controlled access across applications and agents.",
+      "responsibility": "Authority and delegation",
+      "url": "https://authboundry.com",
+      "accent": { "light": "#8a4b36", "dark": "#e09a80" },
+      "status": null
+    },
+    {
+      "id": "agentboundry",
+      "name": "AgentBoundry",
+      "mark": "AG",
+      "category": "Agent infrastructure",
+      "summary": "Infrastructure for building and operating agents with explicit capabilities, boundaries, and execution controls.",
+      "responsibility": "Agent execution and operation",
+      "url": "https://agentboundry.com",
+      "accent": { "light": "#4f4c87", "dark": "#a9a6e3" },
+      "status": null
+    },
+    {
+      "id": "feltkit",
+      "name": "FeltKit",
+      "mark": "FK",
+      "category": "Application development and operations",
+      "summary": "An integrated developer platform that brings application development, durable state, capabilities, services, and deployment together.",
+      "responsibility": "Integrated developer experience",
+      "url": "https://feltkit.com",
+      "accent": { "light": "#7a6a24", "dark": "#d6c27a" },
+      "status": null
+    }
+  ]
+}
