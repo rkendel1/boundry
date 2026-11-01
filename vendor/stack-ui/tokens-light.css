@@ -133,12 +133,12 @@
   --stack-product-accent-fg: #ffffff;
 }
 
-[data-stack-product="feltdb"] { --stack-product-accent: #7a5c3e; --stack-product-accent-fg: #ffffff; }
+[data-stack-product="feltdb"] { --stack-product-accent: #18754a; --stack-product-accent-fg: #ffffff; }
 [data-stack-product="appport"] { --stack-product-accent: #2f6584; --stack-product-accent-fg: #ffffff; }
-[data-stack-product="appboundry"] { --stack-product-accent: #3d6b4f; --stack-product-accent-fg: #ffffff; }
+[data-stack-product="appboundry"] { --stack-product-accent: #6a3fd0; --stack-product-accent-fg: #ffffff; }
 [data-stack-product="authboundry"] { --stack-product-accent: #8a4b36; --stack-product-accent-fg: #ffffff; }
 [data-stack-product="agentboundry"] { --stack-product-accent: #4f4c87; --stack-product-accent-fg: #ffffff; }
-[data-stack-product="feltkit"] { --stack-product-accent: #7a6a24; --stack-product-accent-fg: #ffffff; }
+[data-stack-product="feltkit"] { --stack-product-accent: #0b7f6e; --stack-product-accent-fg: #ffffff; }
 
 @media (prefers-reduced-motion: reduce) {
   :root { --stack-motion-duration-fast: 0ms; --stack-motion-duration-base: 0ms; }

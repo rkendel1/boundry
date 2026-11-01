@@ -15,13 +15,34 @@
     }
   },
   "products": {
-    "$source": "Accents first published in rkendel1/boundry content/products.json; that file now mirrors these values (checked by its build).",
-    "feltdb": { "light": "#7a5c3e", "dark": "#c9a47e" },
-    "appport": { "light": "#2f6584", "dark": "#7fb3d1" },
-    "appboundry": { "light": "#3d6b4f", "dark": "#8cc4a1" },
-    "authboundry": { "light": "#8a4b36", "dark": "#e09a80" },
-    "agentboundry": { "light": "#4f4c87", "dark": "#a9a6e3" },
-    "feltkit": { "light": "#7a6a24", "dark": "#d6c27a" }
+    "$source": "FeltDB, FeltKit and AppBoundry accents come from each product's own logo and website (docs/decisions.md D30); AuthBoundry, AgentBoundry and AppPort have no accent of their own yet and keep the values first published on boundry.company. rkendel1/boundry reads these values from the vendored release.",
+    "feltdb": {
+      "light": "#18754a",
+      "dark": "#42e58d"
+    },
+    "appport": {
+      "light": "#2f6584",
+      "dark": "#7fb3d1"
+    },
+    "appboundry": {
+      "light": "#6a3fd0",
+      "dark": "#b49cf5"
+    },
+    "authboundry": {
+      "light": "#8a4b36",
+      "dark": "#e09a80"
+    },
+    "agentboundry": {
+      "light": "#4f4c87",
+      "dark": "#a9a6e3"
+    },
+    "feltkit": {
+      "light": "#0b7f6e",
+      "dark": "#3fd8c4"
+    }
   },
-  "onAccent": { "light": "#ffffff", "dark": "#0b1020" }
+  "onAccent": {
+    "light": "#ffffff",
+    "dark": "#0b1020"
+  }
 }

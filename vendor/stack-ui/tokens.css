@@ -134,12 +134,12 @@
   --stack-product-accent-fg: #ffffff;
 }
 
-[data-stack-product="feltdb"] { --stack-product-accent: #7a5c3e; --stack-product-accent-fg: #ffffff; }
+[data-stack-product="feltdb"] { --stack-product-accent: #18754a; --stack-product-accent-fg: #ffffff; }
 [data-stack-product="appport"] { --stack-product-accent: #2f6584; --stack-product-accent-fg: #ffffff; }
-[data-stack-product="appboundry"] { --stack-product-accent: #3d6b4f; --stack-product-accent-fg: #ffffff; }
+[data-stack-product="appboundry"] { --stack-product-accent: #6a3fd0; --stack-product-accent-fg: #ffffff; }
 [data-stack-product="authboundry"] { --stack-product-accent: #8a4b36; --stack-product-accent-fg: #ffffff; }
 [data-stack-product="agentboundry"] { --stack-product-accent: #4f4c87; --stack-product-accent-fg: #ffffff; }
-[data-stack-product="feltkit"] { --stack-product-accent: #7a6a24; --stack-product-accent-fg: #ffffff; }
+[data-stack-product="feltkit"] { --stack-product-accent: #0b7f6e; --stack-product-accent-fg: #ffffff; }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-stack-theme="light"]) {
@@ -216,12 +216,12 @@
     --stack-product-accent: #8ab4ff;
     --stack-product-accent-fg: #0b1020;
   }
-  :root:not([data-stack-theme="light"]) [data-stack-product="feltdb"], :root:not([data-stack-theme="light"])[data-stack-product="feltdb"] { --stack-product-accent: #c9a47e; --stack-product-accent-fg: #0b1020; }
+  :root:not([data-stack-theme="light"]) [data-stack-product="feltdb"], :root:not([data-stack-theme="light"])[data-stack-product="feltdb"] { --stack-product-accent: #42e58d; --stack-product-accent-fg: #0b1020; }
   :root:not([data-stack-theme="light"]) [data-stack-product="appport"], :root:not([data-stack-theme="light"])[data-stack-product="appport"] { --stack-product-accent: #7fb3d1; --stack-product-accent-fg: #0b1020; }
-  :root:not([data-stack-theme="light"]) [data-stack-product="appboundry"], :root:not([data-stack-theme="light"])[data-stack-product="appboundry"] { --stack-product-accent: #8cc4a1; --stack-product-accent-fg: #0b1020; }
+  :root:not([data-stack-theme="light"]) [data-stack-product="appboundry"], :root:not([data-stack-theme="light"])[data-stack-product="appboundry"] { --stack-product-accent: #b49cf5; --stack-product-accent-fg: #0b1020; }
   :root:not([data-stack-theme="light"]) [data-stack-product="authboundry"], :root:not([data-stack-theme="light"])[data-stack-product="authboundry"] { --stack-product-accent: #e09a80; --stack-product-accent-fg: #0b1020; }
   :root:not([data-stack-theme="light"]) [data-stack-product="agentboundry"], :root:not([data-stack-theme="light"])[data-stack-product="agentboundry"] { --stack-product-accent: #a9a6e3; --stack-product-accent-fg: #0b1020; }
-  :root:not([data-stack-theme="light"]) [data-stack-product="feltkit"], :root:not([data-stack-theme="light"])[data-stack-product="feltkit"] { --stack-product-accent: #d6c27a; --stack-product-accent-fg: #0b1020; }
+  :root:not([data-stack-theme="light"]) [data-stack-product="feltkit"], :root:not([data-stack-theme="light"])[data-stack-product="feltkit"] { --stack-product-accent: #3fd8c4; --stack-product-accent-fg: #0b1020; }
 
 }
 :root[data-stack-theme="light"] {
@@ -299,12 +299,12 @@
   --stack-product-accent-fg: #ffffff;
 }
 
-:root[data-stack-theme="light"] [data-stack-product="feltdb"], :root[data-stack-theme="light"][data-stack-product="feltdb"] { --stack-product-accent: #7a5c3e; --stack-product-accent-fg: #ffffff; }
+:root[data-stack-theme="light"] [data-stack-product="feltdb"], :root[data-stack-theme="light"][data-stack-product="feltdb"] { --stack-product-accent: #18754a; --stack-product-accent-fg: #ffffff; }
 :root[data-stack-theme="light"] [data-stack-product="appport"], :root[data-stack-theme="light"][data-stack-product="appport"] { --stack-product-accent: #2f6584; --stack-product-accent-fg: #ffffff; }
-:root[data-stack-theme="light"] [data-stack-product="appboundry"], :root[data-stack-theme="light"][data-stack-product="appboundry"] { --stack-product-accent: #3d6b4f; --stack-product-accent-fg: #ffffff; }
+:root[data-stack-theme="light"] [data-stack-product="appboundry"], :root[data-stack-theme="light"][data-stack-product="appboundry"] { --stack-product-accent: #6a3fd0; --stack-product-accent-fg: #ffffff; }
 :root[data-stack-theme="light"] [data-stack-product="authboundry"], :root[data-stack-theme="light"][data-stack-product="authboundry"] { --stack-product-accent: #8a4b36; --stack-product-accent-fg: #ffffff; }
 :root[data-stack-theme="light"] [data-stack-product="agentboundry"], :root[data-stack-theme="light"][data-stack-product="agentboundry"] { --stack-product-accent: #4f4c87; --stack-product-accent-fg: #ffffff; }
-:root[data-stack-theme="light"] [data-stack-product="feltkit"], :root[data-stack-theme="light"][data-stack-product="feltkit"] { --stack-product-accent: #7a6a24; --stack-product-accent-fg: #ffffff; }
+:root[data-stack-theme="light"] [data-stack-product="feltkit"], :root[data-stack-theme="light"][data-stack-product="feltkit"] { --stack-product-accent: #0b7f6e; --stack-product-accent-fg: #ffffff; }
 
 :root[data-stack-theme="dark"] {
   color-scheme: dark;
@@ -381,12 +381,12 @@
   --stack-product-accent-fg: #0b1020;
 }
 
-:root[data-stack-theme="dark"] [data-stack-product="feltdb"], :root[data-stack-theme="dark"][data-stack-product="feltdb"] { --stack-product-accent: #c9a47e; --stack-product-accent-fg: #0b1020; }
+:root[data-stack-theme="dark"] [data-stack-product="feltdb"], :root[data-stack-theme="dark"][data-stack-product="feltdb"] { --stack-product-accent: #42e58d; --stack-product-accent-fg: #0b1020; }
 :root[data-stack-theme="dark"] [data-stack-product="appport"], :root[data-stack-theme="dark"][data-stack-product="appport"] { --stack-product-accent: #7fb3d1; --stack-product-accent-fg: #0b1020; }
-:root[data-stack-theme="dark"] [data-stack-product="appboundry"], :root[data-stack-theme="dark"][data-stack-product="appboundry"] { --stack-product-accent: #8cc4a1; --stack-product-accent-fg: #0b1020; }
+:root[data-stack-theme="dark"] [data-stack-product="appboundry"], :root[data-stack-theme="dark"][data-stack-product="appboundry"] { --stack-product-accent: #b49cf5; --stack-product-accent-fg: #0b1020; }
 :root[data-stack-theme="dark"] [data-stack-product="authboundry"], :root[data-stack-theme="dark"][data-stack-product="authboundry"] { --stack-product-accent: #e09a80; --stack-product-accent-fg: #0b1020; }
 :root[data-stack-theme="dark"] [data-stack-product="agentboundry"], :root[data-stack-theme="dark"][data-stack-product="agentboundry"] { --stack-product-accent: #a9a6e3; --stack-product-accent-fg: #0b1020; }
-:root[data-stack-theme="dark"] [data-stack-product="feltkit"], :root[data-stack-theme="dark"][data-stack-product="feltkit"] { --stack-product-accent: #d6c27a; --stack-product-accent-fg: #0b1020; }
+:root[data-stack-theme="dark"] [data-stack-product="feltkit"], :root[data-stack-theme="dark"][data-stack-product="feltkit"] { --stack-product-accent: #3fd8c4; --stack-product-accent-fg: #0b1020; }
 
 @media (prefers-reduced-motion: reduce) {
   :root { --stack-motion-duration-fast: 0ms; --stack-motion-duration-base: 0ms; }
