@@ -30,6 +30,10 @@ for (const p of products) {
 const archIds = [...site.architecture.rows.flat(), site.architecture.side].filter(Boolean);
 for (const id of archIds) if (!ids.has(id)) errors.push(`architecture references unknown product "${id}"`);
 for (const p of products) if (!archIds.includes(p.id)) warnings.push(`product ${p.id} is not placed in the architecture diagram`);
+if (site.founder) {
+  if (site.founder.url && !/^https:\/\//.test(site.founder.url)) errors.push("founder.url must be https");
+  if (site.founder.portrait && !existsSync(join(root, "static", site.founder.portrait))) errors.push(`founder.portrait not found in static/: ${site.founder.portrait}`);
+}
 if (errors.length) {
   console.error("Build failed:\n  " + errors.join("\n  "));
   process.exit(1);
@@ -81,6 +85,7 @@ function layout({ path, title, description, body }) {
           email: site.contact.email,
           logo: `${site.origin}/favicon.svg`,
           sameAs: products.filter((p) => p.url).map((p) => p.url),
+          ...(site.founder && { founder: { "@type": "Person", name: site.founder.name, url: site.founder.url } }),
         })}</script>`
       : "";
   const productLinks = products
@@ -249,6 +254,26 @@ const PRINCIPLES = [
 const principlesList = `<ol class="principles">${PRINCIPLES.map(
   ([a, b], i) => `<li><span class="num">${String(i + 1).padStart(2, "0")}</span><span class="over">${a}</span><span class="over-not">${b}</span></li>`
 ).join("")}</ol>`;
+
+function founderSection() {
+  const f = site.founder;
+  if (!f) return "";
+  const portrait = f.portrait
+    ? `<img class="founder-portrait" src="${esc(f.portrait)}" alt="${esc(f.portraitAlt || f.name)}" width="480" height="600" loading="lazy" decoding="async">`
+    : "";
+  return `
+<section class="section" id="founder"><div class="wrap split">
+  <div style="display:grid;gap:18px;align-content:start">
+    <div class="eyebrow">About the founder</div>
+    ${portrait}
+    <div><h2>${esc(f.name)}</h2><p class="muted mono" style="font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-top:10px">${esc(f.role)}</p></div>
+  </div>
+  <div class="prose">
+    ${f.bio.map((p) => `<p>${esc(p)}</p>`).join("")}
+    ${f.url ? `<p style="margin-top:1.4em"><a class="textlink ext" href="${esc(f.url)}" rel="noopener">${esc(host(f.url).replace(/^www\./, ""))}</a></p>` : ""}
+  </div>
+</div></section>`;
+}
 
 // ---------------------------------------------------------------- pages
 const pages = [];
@@ -434,7 +459,7 @@ ${ctaBand("Discuss the architecture with our team.", "")}
 pages.push({
   path: "/about/",
   title: "About",
-  description: "Boundry is building the infrastructure that makes it reliable for people and agents to build, extend, and operate applications.",
+  description: "About Boundry: a technology company building infrastructure for the next generation of applications and agents, founded by Randy Kendel.",
   body: `
 <section class="page-head"><div class="wrap">
   <div class="eyebrow">About Boundry</div>
@@ -444,12 +469,14 @@ pages.push({
 
 <section class="section"><div class="wrap split">
   <div style="display:grid;gap:18px">
-    <div class="eyebrow">Vision</div>
-    <h2>Better foundations, not just bigger models.</h2>
+    <div class="eyebrow">The company</div>
+    <h2>More than increasingly capable models.</h2>
   </div>
   <div class="prose">
-    <p>When agents act inside applications, the hard problems are rarely about language. They are about where state lives and whether it can be trusted, what an application can actually do and how that is described, who is allowed to act and on whose behalf, and whether work was really carried out.</p>
-    <p>These are infrastructure problems. Boundry builds infrastructure for them: durable state, application capabilities, application boundaries, authority and delegation, and agent execution — as independently useful products that share a coherent architectural foundation.</p>
+    <p>Boundry is a technology company building infrastructure for the next generation of applications and agents.</p>
+    <p>We believe the future of software requires more than increasingly capable AI models. It requires durable state, explicit authority, discoverable capabilities, reliable execution, and systems designed to work together.</p>
+    <p>Our products address these foundational challenges through an interconnected ecosystem of independently useful technologies.</p>
+    <p style="margin-top:1.4em"><a class="textlink" href="/ecosystem/">Explore the ecosystem →</a></p>
   </div>
 </div></section>
 
@@ -464,6 +491,8 @@ pages.push({
 <section class="section"><div class="wrap">
   <p class="statement">We believe agents should become more capable through better infrastructure, not simply through larger models.</p>
 </div></section>
+
+${founderSection()}
 
 ${ctaBand("Work with Boundry.", "Commercial, technical, and investment conversations are welcome.")}
 `,

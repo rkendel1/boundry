@@ -46,4 +46,5 @@ The build fails on missing fields, duplicate ids, non-https URLs, unknown status
 
 - **Contact email.** `hello@boundry.company` is a placeholder in `site.json`; every mailto link uses it.
 - **Development status.** Every product's `status` is `null`, so the Investors page shows "Shared in discussion". Set `available`, `preview`, `in-development` or `planned` only where it reflects reality.
+- **Founder portrait.** None is published. To add one, put the supplied photo in `static/images/` and set `founder.portrait` in `site.json` (e.g. `"/images/randy-kendel.jpg"`, ideally 4:5). The build fails if the file is missing. Do not substitute a generated image.
 - **AppPort** has no public website (`url: null`); it links to its Ecosystem entry instead.

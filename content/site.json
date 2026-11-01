@@ -5,6 +5,20 @@
   "origin": "https://boundry.company",
   "tagline": "Infrastructure for applications and agents.",
   "description": "Boundry builds infrastructure for applications and agents: durable state, application capabilities, boundaries, authority and delegation, and agent execution.",
+  "founder": {
+    "_readme": "portrait: path to a supplied professional photo placed in ./static (e.g. \"/images/randy-kendel.jpg\"), or null. Never substitute a generated image.",
+    "name": "Randy Kendel",
+    "role": "Founder",
+    "url": "https://www.randykendel.com",
+    "portrait": null,
+    "portraitAlt": "Portrait of Randy Kendel",
+    "bio": [
+      "Boundry was founded by Randy Kendel, an independent technology builder focused on application infrastructure, distributed systems, developer platforms, and agentic software.",
+      "Randy’s approach centers on a simple principle: build systems that make software more capable, reliable, and useful through better architecture and infrastructure.",
+      "His work spans databases, application platforms, agent execution, authorization, and the infrastructure connecting them.",
+      "He is developing Boundry as a unified technology ecosystem where individual products solve distinct problems while contributing to a larger architectural vision."
+    ]
+  },
   "contact": {
     "email": "hello@boundry.company",
     "inquiries": [
@@ -44,10 +58,19 @@
     "_readme": "Rows are drawn top to bottom. 'side' spans the full height of the diagram.",
     "top": "People and agents",
     "rows": [
-      ["agentboundry"],
-      ["appport", "authboundry"],
-      ["appboundry"],
-      ["feltdb"]
+      [
+        "agentboundry"
+      ],
+      [
+        "appport",
+        "authboundry"
+      ],
+      [
+        "appboundry"
+      ],
+      [
+        "feltdb"
+      ]
     ],
     "side": "feltkit"
   }
