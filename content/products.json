@@ -1,5 +1,5 @@
 {
-  "_readme": "The Boundry product directory. Adding an entry here adds the product to the homepage, Ecosystem, Investors, footer and sitemap on the next build. Only 'id', 'name', 'category', 'summary' and 'responsibility' are required. 'url' may be null when a product has no public site (or its domain does not yet serve one: agentboundry.com did not resolve on 2026-11-01). Product accents live in the design foundation (vendor/stack-ui/brand/brand.json), not here. 'status' must be one of the values in site.json → productStatuses, or null if not yet confirmed for publication. To place a product in the architecture diagram, add its id to site.json → architecture.",
+  "_readme": "The Boundry product directory. Adding an entry here adds the product to the homepage, Ecosystem, Investors, footer and sitemap on the next build. Only 'id', 'name', 'category', 'summary' and 'responsibility' are required. 'url' may be null when a product has no public site. Product accents live in the design foundation (vendor/stack-ui/brand/brand.json), not here. Each product's logo is static/images/products/<id>.png, cropped from the product's own repository; the build fails without it. 'status' must be one of the values in site.json → productStatuses, or null if not yet confirmed for publication. To place a product in the architecture diagram, add its id to site.json → architecture.",
   "products": [
     {
       "id": "feltdb",
@@ -39,16 +39,6 @@
       "summary": "Infrastructure for authorization, delegated authority, and controlled access across applications and agents.",
       "responsibility": "Authority and delegation",
       "url": "https://authboundry.com",
-      "status": null
-    },
-    {
-      "id": "agentboundry",
-      "name": "AgentBoundry",
-      "mark": "AG",
-      "category": "Agent infrastructure",
-      "summary": "Infrastructure for building and operating agents with explicit capabilities, boundaries, and execution controls.",
-      "responsibility": "Agent execution and operation",
-      "url": null,
       "status": null
     },
     {

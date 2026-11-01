@@ -47,6 +47,7 @@ for (const p of products) {
   const listed = PORTFOLIO.products.find((x) => x.id === p.id);
   if (!listed) errors.push(`product ${p.id}: not in the shared Boundry portfolio (vendor/stack-ui/esm/brand.js)`);
   else if (listed.name !== p.name) errors.push(`product ${p.id}: name "${p.name}" differs from the shared portfolio ("${listed.name}")`);
+  if (!existsSync(join(root, "static/images/products", `${p.id}.png`))) errors.push(`product ${p.id}: logo missing (static/images/products/${p.id}.png)`);
   if (p.status == null) warnings.push(`product ${p.id}: development status not set (Investors page shows "Shared in discussion")`);
 }
 for (const x of PORTFOLIO.products) if (!products.some((p) => p.id === x.id)) errors.push(`shared portfolio lists ${x.id}, missing from content/products.json`);
@@ -70,8 +71,11 @@ const mailto = (subject) => `mailto:${site.contact.email}?subject=${encodeURICom
 // Product accents come from the design foundation: an element marked
 // data-stack-product gets --stack-product-accent for the current theme.
 const productAttr = (p) => `data-stack-product="${esc(p.id)}"`;
+// Each product's real logo (static/images/products/<id>.png), on a light tile
+// so dark artwork stays visible in both themes.
+const logoPath = (p) => `/images/products/${p.id}.png`;
 const mark = (p, cls = "") =>
-  `<span class="pmark ${cls}" ${productAttr(p)} aria-hidden="true">${esc(p.mark || p.name.slice(0, 2).toUpperCase())}</span>`;
+  `<span class="pmark ${cls}" ${productAttr(p)} aria-hidden="true"><img src="${logoPath(p)}" alt="" width="96" height="96" loading="lazy" decoding="async"></span>`;
 
 const css = [
   readFileSync(join(ui, "tokens.css"), "utf8"),
@@ -292,7 +296,7 @@ pages.push({
     <div class="foundation"><span class="num">01</span><h3>State</h3><p>Durable, authoritative state that applications and agents can build on.</p><span class="by">FeltDB</span></div>
     <div class="foundation"><span class="num">02</span><h3>Capabilities</h3><p>Application functionality that is discoverable and usable, with semantic and authority metadata.</p><span class="by">AppPort · AppBoundry</span></div>
     <div class="foundation"><span class="num">03</span><h3>Authority</h3><p>Authorization, delegated authority, and controlled access across applications and agents.</p><span class="by">AuthBoundry</span></div>
-    <div class="foundation"><span class="num">04</span><h3>Execution</h3><p>Agents built and operated with explicit capabilities, boundaries, and execution controls.</p><span class="by">AgentBoundry</span></div>
+    <div class="foundation"><span class="num">04</span><h3>Execution</h3><p>Capabilities executed on demand, inside the application boundary, with a durable record of what ran.</p><span class="by">AppBoundry</span></div>
   </div>
 </div></section>
 
@@ -302,7 +306,14 @@ pages.push({
     <h2>Independently useful. Designed to work together.</h2>
     <p class="lede">Each Boundry product addresses one infrastructure responsibility and can be adopted on its own. FeltKit brings them together as an integrated developer platform.</p>
   </div>
-  <div class="products">${products.map(productCard).join("")}</div>
+  <div class="products">${products.map(productCard).join("")}${products.length % 3 ? `
+    <article class="product-card product-card--more">
+      <div class="cat">How they fit together</div>
+      <h3>One architecture, independent products</h3>
+      <p>Each product owns one responsibility and is useful on its own. See how state, capabilities, boundaries and authority connect.</p>
+      <div></div>
+      <footer><a href="/architecture/">Architecture</a><a href="/ecosystem/">Ecosystem</a></footer>
+    </article>` : ""}</div>
 </div></section>
 
 <section class="section"><div class="wrap split">
@@ -332,7 +343,7 @@ ${ctaBand("Building applications or agents on serious infrastructure?", "Talk wi
 pages.push({
   path: "/ecosystem/",
   title: "Ecosystem",
-  description: "The Boundry product ecosystem: FeltDB, AppPort, AppBoundry, AuthBoundry, AgentBoundry, and FeltKit — independently useful infrastructure that works together.",
+  description: "The Boundry product ecosystem: FeltDB, AppPort, AppBoundry, AuthBoundry, and FeltKit — independently useful infrastructure that works together.",
   body: `
 <section class="page-head"><div class="wrap">
   <div class="eyebrow">Ecosystem</div>
@@ -364,7 +375,7 @@ pages.push({
     <h2>One responsibility per product.</h2>
   </div>
   <div class="prose">
-    <p>The ecosystem is organized by responsibility rather than by feature. Durable state, capability discovery and invocation, application boundaries, authority and delegation, agent execution, and the developer experience that ties them together are each handled by a distinct product.</p>
+    <p>The ecosystem is organized by responsibility rather than by feature. Durable state, capability discovery and invocation, application boundaries and execution, authority and delegation, and the developer experience that ties them together are each handled by a distinct product.</p>
     <p>That separation is what lets a team adopt a single component without taking on the whole platform — and what lets the ecosystem grow by adding new responsibilities rather than by enlarging existing products.</p>
     <p style="margin-top:1.4em"><a class="textlink" href="/architecture/">Explore the architecture →</a></p>
   </div>
@@ -378,7 +389,7 @@ ${ctaBand("Interested in a specific product?", "Reach out about evaluation, inte
 pages.push({
   path: "/architecture/",
   title: "Architecture",
-  description: "How Boundry's products relate: durable state, capability discovery and invocation, application boundaries, authority and delegation, agent execution, and an integrated developer experience.",
+  description: "How Boundry's products relate: durable state, capability discovery and invocation, application boundaries and execution, authority and delegation, and an integrated developer experience.",
   body: `
 <section class="page-head"><div class="wrap">
   <div class="eyebrow">Architecture</div>
@@ -415,7 +426,7 @@ pages.push({
     <h2>Modular by design.</h2>
   </div>
   <div class="cols">
-    <div class="col"><span class="tag">Modularity</span><h3>Adopt one component at a time</h3><p>Each product is designed to be useful on its own. A team that needs durable state, or authority and delegation, or agent execution controls can adopt that product without adopting the rest.</p></div>
+    <div class="col"><span class="tag">Modularity</span><h3>Adopt one component at a time</h3><p>Each product is designed to be useful on its own. A team that needs durable state, or authority and delegation, or application boundaries can adopt that product without adopting the rest.</p></div>
     <div class="col"><span class="tag">Interoperability</span><h3>Connected through explicit contracts</h3><p>Products are designed to work together through defined interfaces rather than hidden coupling, so the relationships between them remain visible, reviewable, and replaceable.</p></div>
     <div class="col"><span class="tag">Integration</span><h3>An integrated path when you want it</h3><p>FeltKit brings application development, durable state, capabilities, services, and deployment together for teams that prefer one integrated developer platform.</p></div>
   </div>
@@ -431,7 +442,6 @@ pages.push({
     <p><strong>AppBoundry</strong> defines the application boundary: isolation, capability discovery, and portability.</p>
     <p><strong>AppPort</strong> makes application functionality discoverable and invocable by agents, carrying semantic and authority metadata with each capability.</p>
     <p><strong>AuthBoundry</strong> governs authority: authorization, delegated authority, and controlled access across applications and agents.</p>
-    <p><strong>AgentBoundry</strong> is where agents are built and operated, with explicit capabilities, boundaries, and execution controls.</p>
     <p><strong>FeltKit</strong> spans the stack as the integrated developer experience.</p>
   </div>
 </div></section>
@@ -551,7 +561,7 @@ pages.push({
     <p class="lede">The portfolio structure creates more than one path to adoption. The opportunities below describe the potential of the model, not current commercial results.</p>
   </div>
   <div class="cols">
-    <div class="col"><span class="tag">Potential · Products</span><h3>Individual product adoption</h3><p>Because each product addresses one responsibility, teams can adopt a single component — durable state, authority and delegation, or agent execution — to solve a specific problem without a platform commitment.</p></div>
+    <div class="col"><span class="tag">Potential · Products</span><h3>Individual product adoption</h3><p>Because each product addresses one responsibility, teams can adopt a single component — durable state, authority and delegation, or application boundaries — to solve a specific problem without a platform commitment.</p></div>
     <div class="col"><span class="tag">Potential · Platform</span><h3>Integrated platform</h3><p>FeltKit brings application development, durable state, capabilities, services, and deployment together. Teams that start with one product have a path to the integrated platform.</p></div>
     <div class="col"><span class="tag">Potential · Ecosystem</span><h3>Shared foundations</h3><p>Products that share an architecture reinforce one another: each additional product adopted adds value to those already in use, and new products can be added as the ecosystem evolves.</p></div>
   </div>

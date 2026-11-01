@@ -4,7 +4,7 @@
   "domain": "boundry.company",
   "origin": "https://boundry.company",
   "tagline": "Infrastructure for applications and agents.",
-  "description": "Boundry builds infrastructure for applications and agents: durable state, application capabilities, boundaries, authority and delegation, and agent execution.",
+  "description": "Boundry builds infrastructure for applications and agents: durable state, application capabilities and boundaries, authority and delegation, and an integrated developer platform.",
   "founder": {
     "_readme": "portrait: path to a supplied professional photo placed in ./static (e.g. \"/images/randy-kendel.jpg\"), or null. Never substitute a generated image.",
     "name": "Randy Kendel",
@@ -56,9 +56,6 @@
     "_readme": "Rows are drawn top to bottom. 'side' spans the full height of the diagram.",
     "top": "People and agents",
     "rows": [
-      [
-        "agentboundry"
-      ],
       [
         "appport",
         "authboundry"
