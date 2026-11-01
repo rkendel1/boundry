@@ -4,11 +4,28 @@
 
 import { readFileSync, writeFileSync, mkdirSync, rmSync, cpSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(root, "dist");
+
+// ---------------------------------------------------------------- design foundation
+// The Boundry design foundation (rkendel1/stack-ui), vendored as a checksummed
+// static release. Every file must match SHA256SUMS before anything is used.
+const ui = join(root, "vendor/stack-ui");
+for (const line of readFileSync(join(ui, "SHA256SUMS"), "utf8").trim().split("\n")) {
+  const [sum, file] = line.split(/\s+/);
+  const actual = createHash("sha256").update(readFileSync(join(ui, file))).digest("hex");
+  if (actual !== sum) {
+    console.error(`Build failed: vendor/stack-ui/${file} does not match SHA256SUMS`);
+    process.exit(1);
+  }
+}
+const { html: shared } = await import(pathToFileURL(join(ui, "esm/html.js")).href);
+const { PORTFOLIO } = await import(pathToFileURL(join(ui, "esm/brand.js")).href);
+const { THEME_INIT_SCRIPT, THEME_STORAGE_KEY } = await import(pathToFileURL(join(ui, "esm/theme.js")).href);
+const brand = JSON.parse(readFileSync(join(ui, "brand/brand.json"), "utf8"));
 const site = JSON.parse(readFileSync(join(root, "content/site.json"), "utf8"));
 const { products } = JSON.parse(readFileSync(join(root, "content/products.json"), "utf8"));
 const YEAR = new Date().getFullYear();
@@ -25,8 +42,14 @@ for (const p of products) {
   ids.add(p.id);
   if (p.url != null && !/^https:\/\/[^\s]+$/.test(p.url)) errors.push(`product ${p.id}: url must be https or null`);
   if (p.status != null && !(p.status in site.productStatuses)) errors.push(`product ${p.id}: unknown status "${p.status}"`);
+  if (p.accent) errors.push(`product ${p.id}: "accent" now lives in the design foundation (vendor/stack-ui/brand/brand.json); remove it here`);
+  if (!brand.products[p.id]) errors.push(`product ${p.id}: no accent in the design foundation's brand.json`);
+  const listed = PORTFOLIO.products.find((x) => x.id === p.id);
+  if (!listed) errors.push(`product ${p.id}: not in the shared Boundry portfolio (vendor/stack-ui/esm/brand.js)`);
+  else if (listed.name !== p.name) errors.push(`product ${p.id}: name "${p.name}" differs from the shared portfolio ("${listed.name}")`);
   if (p.status == null) warnings.push(`product ${p.id}: development status not set (Investors page shows "Shared in discussion")`);
 }
+for (const x of PORTFOLIO.products) if (!products.some((p) => p.id === x.id)) errors.push(`shared portfolio lists ${x.id}, missing from content/products.json`);
 const archIds = [...site.architecture.rows.flat(), site.architecture.side].filter(Boolean);
 for (const id of archIds) if (!ids.has(id)) errors.push(`architecture references unknown product "${id}"`);
 for (const p of products) if (!archIds.includes(p.id)) warnings.push(`product ${p.id} is not placed in the architecture diagram`);
@@ -44,20 +67,19 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const byId = Object.fromEntries(products.map((p) => [p.id, p]));
 const host = (url) => new URL(url).host;
 const mailto = (subject) => `mailto:${site.contact.email}?subject=${encodeURIComponent(subject)}`;
-const accentVars = (p) => (p.accent ? `--al:${p.accent.light};--ad:${p.accent.dark}` : "");
+// Product accents come from the design foundation: an element marked
+// data-stack-product gets --stack-product-accent for the current theme.
+const productAttr = (p) => `data-stack-product="${esc(p.id)}"`;
 const mark = (p, cls = "") =>
-  `<span class="pmark ${cls}" style="${accentVars(p)}" aria-hidden="true">${esc(p.mark || p.name.slice(0, 2).toUpperCase())}</span>`;
+  `<span class="pmark ${cls}" ${productAttr(p)} aria-hidden="true">${esc(p.mark || p.name.slice(0, 2).toUpperCase())}</span>`;
 
-// Product accents switch with theme via --al / --ad custom properties.
-const accentCss = `
-[style*="--al"] { --a: var(--al); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) [style*="--al"] { --a: var(--ad); } }
-:root[data-theme="dark"] [style*="--al"] { --a: var(--ad); }`;
-
-const css = readFileSync(join(root, "src/styles.css"), "utf8") + accentCss;
+const css = [
+  readFileSync(join(ui, "tokens.css"), "utf8"),
+  readFileSync(join(ui, "core.css"), "utf8"),
+  readFileSync(join(root, "src/styles.css"), "utf8"),
+].join("\n");
 const cssHash = createHash("sha256").update(css).digest("hex").slice(0, 10);
 
-const logo = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="1.5" y="1.5" width="21" height="21" stroke="currentColor" stroke-width="1.6"/><rect x="7" y="7" width="10" height="10" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="14" width="5" height="5" fill="currentColor"/></svg>`;
 
 const NAV = [
   ["/", "Home"],
@@ -71,9 +93,7 @@ const NAV = [
 function layout({ path, title, description, body }) {
   const fullTitle = path === "/" ? `${site.name} — ${site.tagline.replace(/\.$/, "")}` : `${title} — ${site.name}`;
   const url = site.origin + path;
-  const navItems = NAV.map(
-    ([href, label]) => `<li><a href="${href}"${href === path ? ' aria-current="page"' : ""}>${label}</a></li>`
-  ).join("");
+  const navigation = NAV.map(([href, label]) => ({ label, href, current: href === path }));
   const jsonld =
     path === "/"
       ? `<script type="application/ld+json">${JSON.stringify({
@@ -83,19 +103,11 @@ function layout({ path, title, description, body }) {
           url: site.origin,
           description: site.description,
           email: site.contact.email,
-          logo: `${site.origin}/favicon.svg`,
+          logo: `${site.origin}/boundry-mark.svg`,
           sameAs: products.filter((p) => p.url).map((p) => p.url),
           ...(site.founder && { founder: { "@type": "Person", name: site.founder.name, url: site.founder.url } }),
         })}</script>`
       : "";
-  const productLinks = products
-    .map((p) =>
-      p.url
-        ? `<li><a class="ext" href="${p.url}" rel="noopener">${esc(p.name)}</a></li>`
-        : `<li><a href="/ecosystem/#${p.id}">${esc(p.name)}</a></li>`
-    )
-    .join("");
-
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -110,65 +122,38 @@ function layout({ path, title, description, body }) {
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${url}">
 <meta name="twitter:card" content="summary">
-<meta name="theme-color" content="#f6f6f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0d0e10" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<script>(function(){var d=document.documentElement;d.className+=' js';try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t)}catch(e){}})();</script>
+<script>${THEME_INIT_SCRIPT}</script>
 <link rel="stylesheet" href="/styles.css?v=${cssHash}">
 ${jsonld}
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="/" aria-label="${site.name} home">${logo}<span>${site.name}</span></a>
-    <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
-      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 6h14M3 14h14"/></svg>
-    </button>
-    <nav class="nav" id="site-nav" aria-label="Primary"><ul>${navItems}</ul></nav>
-    <button class="icon-btn theme-btn" type="button" aria-label="Toggle color theme">
-      <svg class="theme-icon-light" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.5v2.5M10 16v2.5M1.5 10H4M16 10h2.5M4 4l1.8 1.8M14.2 14.2L16 16M4 16l1.8-1.8M14.2 5.8L16 4"/></svg>
-      <svg class="theme-icon-dark" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M16.5 12.5A7 7 0 0 1 7.5 3.5a7 7 0 1 0 9 9z"/></svg>
-    </button>
-  </div>
-</header>
+${shared.SiteHeader({ mainId: "main", navigation, navigationLabel: "Primary", theme: { preference: "system" } })}
 <main id="main">
 ${body}
 </main>
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <a class="brand" href="/">${logo}<span>${site.name}</span></a>
-        <p>${esc(site.tagline)}</p>
-      </div>
-      <div><h2>Products</h2><ul>${productLinks}</ul></div>
-      <div><h2>Company</h2><ul>
-        <li><a href="/ecosystem/">Ecosystem</a></li>
-        <li><a href="/architecture/">Architecture</a></li>
-        <li><a href="/about/">About</a></li>
-        <li><a href="/investors/">Investors</a></li>
-      </ul></div>
-      <div><h2>Contact</h2><ul>
-        <li><a href="/contact/">Contact</a></li>
-        <li><a href="mailto:${site.contact.email}">${site.contact.email}</a></li>
-      </ul></div>
-    </div>
-    <div class="footer-base">
-      <span>© ${YEAR} ${site.name}</span>
-      <span>${site.domain}</span>
-    </div>
-  </div>
-</footer>
+${shared.SiteFooter({
+  id: "site-footer",
+  tagline: site.tagline,
+  year: YEAR,
+  columns: [
+    { title: "Company", links: [["/ecosystem/", "Ecosystem"], ["/architecture/", "Architecture"], ["/about/", "About"], ["/investors/", "Investors"]].map(([href, label]) => ({ label, href })) },
+    { title: "Contact", links: [{ label: "Contact", href: "/contact/" }, { label: site.contact.email, href: `mailto:${site.contact.email}` }] },
+  ],
+})}
 <script>
 (function(){
-  var b=document.querySelector('.menu-btn'),n=document.getElementById('site-nav');
-  b&&b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o)});
-  var t=document.querySelector('.theme-btn'),d=document.documentElement;
-  t&&t.addEventListener('click',function(){
-    var cur=d.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
-    var next=cur==='dark'?'light':'dark';d.setAttribute('data-theme',next);
-    try{localStorage.setItem('theme',next)}catch(e){}
+  // The shared theme switch: System (default) follows the OS; Light or Dark is
+  // remembered for this site, as the design foundation's theme.js does.
+  var d=document.documentElement,k=${JSON.stringify(THEME_STORAGE_KEY)},s=document.querySelector('[data-stack-theme-control]');
+  if(!s)return;
+  try{var v=localStorage.getItem(k);if(v==='light'||v==='dark')s.value=v;}catch(e){}
+  s.addEventListener('change',function(){
+    var v=s.value;
+    if(v==='light'||v==='dark')d.setAttribute('data-stack-theme',v);else d.removeAttribute('data-stack-theme');
+    try{if(v==='light'||v==='dark')localStorage.setItem(k,v);else localStorage.removeItem(k);}catch(e){}
   });
 })();
 </script>
@@ -179,7 +164,7 @@ ${body}
 
 // ---------------------------------------------------------------- shared fragments
 const productCard = (p) => `
-<article class="product-card" style="${accentVars(p)}">
+<article class="product-card" ${productAttr(p)}>
   <header>${mark(p)}<div><div class="cat">${esc(p.category)}</div><h3>${esc(p.name)}</h3></div></header>
   <p>${esc(p.summary)}</p>
   <div></div>
@@ -190,7 +175,7 @@ const productCard = (p) => `
 </article>`;
 
 const archCell = (p, cls = "", extraStyle = "") => `
-  <a class="arch-cell ${cls}" href="/ecosystem/#${p.id}" style="${extraStyle}${accentVars(p)}">
+  <a class="arch-cell ${cls}" href="/ecosystem/#${p.id}" ${productAttr(p)}${extraStyle ? ` style="${extraStyle}"` : ""}>
     <span class="n">${esc(p.name)}</span><span class="r">${esc(p.responsibility)}</span>
   </a>`;
 
@@ -360,7 +345,7 @@ pages.push({
   ${products
     .map(
       (p) => `
-    <article class="prow" id="${p.id}" style="${accentVars(p)}">
+    <article class="prow" id="${p.id}" ${productAttr(p)}>
       <div class="id">${mark(p)}<div><h2>${esc(p.name)}</h2><div class="cat">${esc(p.category)}</div></div></div>
       <div class="desc"><p>${esc(p.summary)}</p></div>
       <dl>
@@ -682,7 +667,8 @@ ${pages.map((p) => `  <url><loc>${site.origin}${p.path}</loc></url>`).join("\n")
 `
 );
 writeFileSync(join(out, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${site.origin}/sitemap.xml\n`);
-writeFileSync(join(out, "favicon.svg"), logo.replace('aria-hidden="true"', 'xmlns="http://www.w3.org/2000/svg"').replace(/currentColor/g, "#121315"));
+cpSync(join(ui, "brand/boundry-favicon.svg"), join(out, "favicon.svg"));
+cpSync(join(ui, "brand/boundry-mark.svg"), join(out, "boundry-mark.svg"));
 
 console.log(`Built ${pages.length + 1} pages → dist/`);
 for (const w of warnings) console.log("  note: " + w);

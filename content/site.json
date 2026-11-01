@@ -13,10 +13,8 @@
     "portrait": null,
     "portraitAlt": "Portrait of Randy Kendel",
     "bio": [
-      "Boundry was founded by Randy Kendel, an independent technology builder focused on application infrastructure, distributed systems, developer platforms, and agentic software.",
-      "Randy’s approach centers on a simple principle: build systems that make software more capable, reliable, and useful through better architecture and infrastructure.",
-      "His work spans databases, application platforms, agent execution, authorization, and the infrastructure connecting them.",
-      "He is developing Boundry as a unified technology ecosystem where individual products solve distinct problems while contributing to a larger architectural vision."
+      "Randy Kendel is an independent technology builder focused on application infrastructure, distributed systems, developer platforms, and agentic software.",
+      "His work explores how better architecture, durable state, explicit authority, and reliable execution make applications and agents more capable."
     ]
   },
   "contact": {

@@ -1,0 +1,27 @@
+{
+  "$description": "Boundry company and product identity. Source of truth for the --stack-brand-* and --stack-product-* custom properties in tokens.css and for the product accents every Boundry site and product shell uses. Identity is never a state colour: status, evidence and action tokens do not change with the product (docs/brand.md §5).",
+  "company": {
+    "light": {
+      "brand-ink": "#0b1538",
+      "brand-accent": "#0a5ce8",
+      "brand-mark-start": "#0b1538",
+      "brand-mark-end": "#0a64ff"
+    },
+    "dark": {
+      "brand-ink": "#e6ebf7",
+      "brand-accent": "#8ab4ff",
+      "brand-mark-start": "#dbe5ff",
+      "brand-mark-end": "#3d86ff"
+    }
+  },
+  "products": {
+    "$source": "Accents first published in rkendel1/boundry content/products.json; that file now mirrors these values (checked by its build).",
+    "feltdb": { "light": "#7a5c3e", "dark": "#c9a47e" },
+    "appport": { "light": "#2f6584", "dark": "#7fb3d1" },
+    "appboundry": { "light": "#3d6b4f", "dark": "#8cc4a1" },
+    "authboundry": { "light": "#8a4b36", "dark": "#e09a80" },
+    "agentboundry": { "light": "#4f4c87", "dark": "#a9a6e3" },
+    "feltkit": { "light": "#7a6a24", "dark": "#d6c27a" }
+  },
+  "onAccent": { "light": "#ffffff", "dark": "#0b1020" }
+}
