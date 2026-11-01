@@ -9,7 +9,19 @@ node src/build.mjs                 # writes ./dist
 python3 -m http.server 8000 -d dist
 ```
 
-Requires Node 18+. Deploy `dist/` to any static host (Cloudflare Pages, Netlify, S3/CloudFront, GitHub Pages). Configure the host to serve `404.html` for missing paths.
+Requires Node 18+.
+
+## Deploying (Vercel)
+
+`vercel.json` holds the whole deployment config: no framework, no install step, build `node src/build.mjs`, output `dist`. Import `rkendel1/boundry` in Vercel and leave the project settings at their defaults; `vercel.json` overrides them.
+
+The config also:
+- redirects `/about` → `/about/` (`trailingSlash: true`), matching the canonical URLs and sitemap;
+- serves `404.html` for unknown paths;
+- sets `nosniff`, `Referrer-Policy`, `X-Frame-Options: DENY` and `Permissions-Policy` headers;
+- caches `styles.css` for a year (pages reference it with a content-hash query, so changes bust the cache).
+
+Add `boundry.company` (and `www.boundry.company` redirecting to it) under Project → Settings → Domains.
 
 ## Where things live
 
@@ -19,6 +31,7 @@ Requires Node 18+. Deploy `dist/` to any static host (Cloudflare Pages, Netlify,
 | Company settings, contact email, inquiry types, architecture layout | `content/site.json` |
 | Page templates and copy | `src/build.mjs` |
 | Styles (light/dark tokens at the top) | `src/styles.css` |
+| Vercel deployment config | `vercel.json` |
 | Extra static files copied verbatim (e.g. og images) | `static/` |
 
 ## Adding a product
