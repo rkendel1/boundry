@@ -554,7 +554,7 @@ textarea.stack-field__control { min-height: calc(var(--stack-size-control-md) * 
    bare elements (nav, footer, a, p). The header and footer set every layout
    and text property they depend on, so a product's element rules cannot
    reshape them. */
-.stack-site-header, .stack-site-footer { text-align: left; text-transform: none; letter-spacing: normal; }
+.stack-site-header, .stack-site-footer { display: block; height: auto; padding: 0; margin: 0; text-align: left; text-transform: none; letter-spacing: normal; }
 .stack-site-header nav, .stack-site-footer nav { display: block; gap: normal; padding: 0; margin: 0; border: 0; background: none; position: static; width: auto; height: auto; }
 .stack-site-header a, .stack-site-footer a { text-transform: none; letter-spacing: normal; border: 0; font-weight: inherit; }
 .stack-site-footer p, .stack-site-footer ul, .stack-site-footer li { text-align: left; }
@@ -581,6 +581,7 @@ textarea.stack-field__control { min-height: calc(var(--stack-size-control-md) * 
 .stack-site-footer__products { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: var(--stack-space-2) var(--stack-space-4); margin-top: var(--stack-space-4); }
 .stack-site-footer .stack-site-footer__product {
   display: flex; flex-direction: column; padding: var(--stack-space-2) 0 var(--stack-space-2) var(--stack-space-3);
+  align-items: flex-start; gap: 0; white-space: normal;
   border: 0; border-left: var(--stack-border-width-thick) solid var(--stack-product-accent); text-decoration: none;
 }
 .stack-site-footer__product-name { color: var(--stack-color-text-default); font-weight: var(--stack-font-weight-semibold); }
