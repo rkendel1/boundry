@@ -9,6 +9,7 @@ Boundry design foundation ([rkendel1/stack-ui](https://github.com/rkendel1/stack
 ```bash
 node src/build.mjs                 # writes ./dist (fails if vendor/stack-ui does not match SHA256SUMS)
 node src/check.mjs                 # every page has the shared header, footer, theme control and product links
+node vendor/stack-ui/conformance.mjs --company --html dist --css src/styles.css   # design-foundation conformance
 python3 -m http.server 8000 -d dist
 ```
 
@@ -16,7 +17,7 @@ Requires Node 18+.
 
 ## Deploying (Vercel)
 
-`vercel.json` holds the whole deployment config: no framework, no install step, build `node src/build.mjs`, output `dist`. Import `rkendel1/boundry` in Vercel and leave the project settings at their defaults; `vercel.json` overrides them.
+`vercel.json` holds the whole deployment config: no framework, no install step, build `node src/build.mjs` followed by the site check and design-foundation conformance (a non-conforming build does not deploy), output `dist`. Import `rkendel1/boundry` in Vercel and leave the project settings at their defaults; `vercel.json` overrides them.
 
 The config also:
 - redirects `/about` → `/about/` (`trailingSlash: true`), matching the canonical URLs and sitemap;
