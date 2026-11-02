@@ -52,7 +52,7 @@ The build fails on missing fields, duplicate ids, non-https URLs, unknown status
 ## Before launch — needs confirmation
 
 - **Contact email.** `hello@boundry.company` is a placeholder in `site.json`; every mailto link uses it.
-- **Development status.** Every product's `status` is `null`, so the Investors page shows "Shared in discussion". Set `available`, `preview`, `in-development` or `planned` only where it reflects reality.
+- **Development status.** Set to match the investor deck: FeltKit, FeltDB and AppPort `preview` (working beta; packages published on npm), AppBoundry and AuthBoundry `in-development` (early). Change them in `content/products.json` as products move.
 - **Founder portrait.** None is published. To add one, put the supplied photo in `static/images/` and set `founder.portrait` in `site.json` (e.g. `"/images/randy-kendel.jpg"`, ideally 4:5). The build fails if the file is missing. Do not substitute a generated image.
 - **AppPort** has no public website (`url: null`); it links to its Ecosystem entry instead.
 - **Logo master file.** The mark in `vendor/stack-ui/brand/` is a vector redraw of the supplied logo; commit the master artwork to stack-ui to replace it.
