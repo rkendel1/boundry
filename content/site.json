@@ -4,7 +4,7 @@
   "domain": "boundry.company",
   "origin": "https://boundry.company",
   "tagline": "Infrastructure for applications and agents.",
-  "description": "Boundry builds infrastructure for applications and agents: durable state, application capabilities and boundaries, authority and delegation, and an integrated developer platform.",
+  "description": "Boundry builds infrastructure for applications that people and AI agents both use and operate: FeltDB for application state, AppPort for capabilities and operational services, and FeltKit, the integrated product built on them.",
   "founder": {
     "_readme": "portrait: path to a supplied professional photo placed in ./static (e.g. \"/images/randy-kendel.jpg\"), or null. Never substitute a generated image.",
     "name": "Randy Kendel",
@@ -13,8 +13,9 @@
     "portrait": null,
     "portraitAlt": "Portrait of Randy Kendel",
     "bio": [
-      "Randy Kendel is an independent technology builder focused on application infrastructure, distributed systems, developer platforms, and agentic software.",
-      "His work explores how better architecture, durable state, explicit authority, and reliable execution make applications and agents more capable."
+      "Randy Kendel founded Boundry in 2026 and built its technology: FeltDB, AppPort and FeltKit.",
+      "Before Boundry he was a Product Manager – Technical at AWS, delivered CVS's Digital COVID Vaccine Scheduler across 9,600+ pharmacies in all 50 states, and ran his own technology consultancy, Kendel Consulting.",
+      "A non-traditional developer, he builds to remove complexity, so creating software feels intuitive to more than the experienced few."
     ]
   },
   "contact": {
@@ -53,20 +54,18 @@
     "planned": "Planned"
   },
   "architecture": {
-    "_readme": "Rows are drawn top to bottom. 'side' spans the full height of the diagram.",
+    "_readme": "Rows are drawn top to bottom; the cells of a row share its width. The top row holds the products, the bottom row the foundation they are built on.",
     "top": "People and agents",
     "rows": [
       [
-        "appport",
+        "feltkit",
+        "appboundry",
         "authboundry"
       ],
       [
-        "appboundry"
-      ],
-      [
+        "appport",
         "feltdb"
       ]
-    ],
-    "side": "feltkit"
+    ]
   }
 }
