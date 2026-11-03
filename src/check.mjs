@@ -20,6 +20,12 @@ const walk = (dir) => readdirSync(dir).forEach((name) => {
 walk(dist);
 
 const failures = [];
+// Every published package listed in content/products.json is linked on the Ecosystem page.
+const { products } = JSON.parse(readFileSync(join(root, "content/products.json"), "utf8"));
+const ecosystem = readFileSync(join(dist, "ecosystem/index.html"), "utf8");
+for (const p of products) for (const pkg of p.packages ?? []) {
+  if (!ecosystem.includes(`href="https://www.npmjs.com/package/${pkg.name}"`)) failures.push(`/ecosystem/: npm link to ${pkg.name} (${p.name})`);
+}
 for (const file of pages) {
   const html = readFileSync(file, "utf8");
   const page = file.slice(dist.length) || "/";

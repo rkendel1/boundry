@@ -1,5 +1,5 @@
 {
-  "_readme": "The Boundry product directory. Adding an entry here adds the product to the homepage, Ecosystem, Investors, footer and sitemap on the next build. Only 'id', 'name', 'category', 'summary' and 'responsibility' are required. 'url' may be null when a product has no public site. Product accents live in the design foundation (vendor/stack-ui/brand/brand.json), not here. Each product's logo is static/images/products/<id>.png, cropped from the product's own repository; the build fails without it. 'status' must be one of the values in site.json → productStatuses, or null if not yet confirmed for publication. To place a product in the architecture diagram, add its id to site.json → architecture.",
+  "_readme": "The Boundry product directory. Adding an entry here adds the product to the homepage, Ecosystem, Investors, footer and sitemap on the next build. Only 'id', 'name', 'category', 'summary' and 'responsibility' are required. 'url' may be null when a product has no public site. Product accents live in the design foundation (vendor/stack-ui/brand/brand.json), not here. Each product's logo is static/images/products/<id>.png, cropped from the product's own repository; the build fails without it. 'status' must be one of the values in site.json → productStatuses, or null if not yet confirmed for publication. To place a product in the architecture diagram, add its id to site.json → architecture. 'packages' lists the product's packages on the public npm registry ({name, purpose}); 'install' is the one command shown on the product card (it must name one of them). Both are optional; list only packages that are published.",
   "products": [
     {
       "id": "feltkit",
@@ -9,7 +9,18 @@
       "summary": "Product one: a preassembled application stack that agents can operate, built on FeltDB and AppPort. Go from zero to a deployed application in minutes, with a studio to configure and maintain it, not just develop it.",
       "responsibility": "Integrated product",
       "url": "https://getfeltkit.com",
-      "status": "preview"
+      "status": "preview",
+      "install": "npm create feltkit@latest my-app",
+      "packages": [
+        {
+          "name": "create-feltkit",
+          "purpose": "Creates a FeltKit application"
+        },
+        {
+          "name": "@feltdb/feltkit",
+          "purpose": "SDK, runtime, CLI and dashboard"
+        }
+      ]
     },
     {
       "id": "feltdb",
@@ -19,7 +30,18 @@
       "summary": "Durable state for applications and agents: atomic transactions, safe concurrency and reactive collections, with one API from the browser to Managed FeltDB, so application code does not change when the deployment does.",
       "responsibility": "Application state",
       "url": "https://feltdb.com",
-      "status": "preview"
+      "status": "preview",
+      "install": "npm install @feltdb/core",
+      "packages": [
+        {
+          "name": "@feltdb/core",
+          "purpose": "The database: browser, local and server runtimes"
+        },
+        {
+          "name": "@feltdb/studio",
+          "purpose": "Developer interface and observability"
+        }
+      ]
     },
     {
       "id": "appport",
@@ -29,7 +51,22 @@
       "summary": "Capabilities as contracts: discoverable, governed and reusable across applications, agents and technologies, together with the operational services applications need: files, notifications, configuration, jobs and webhooks.",
       "responsibility": "Capabilities and operational services",
       "url": null,
-      "status": "preview"
+      "status": "preview",
+      "install": "npm install @appport/core",
+      "packages": [
+        {
+          "name": "@appport/core",
+          "purpose": "Capability runtime: registry, dispatcher, events, streams"
+        },
+        {
+          "name": "@appport/services",
+          "purpose": "API keys, webhooks, jobs and secrets"
+        },
+        {
+          "name": "appport",
+          "purpose": "Command line interface"
+        }
+      ]
     },
     {
       "id": "appboundry",
@@ -39,7 +76,14 @@
       "summary": "Runs portable application artifacts inside a controlled boundary, reaching state and capabilities only through controlled interfaces.",
       "responsibility": "Application boundaries and portable execution",
       "url": "https://appboundry.com",
-      "status": "in-development"
+      "status": "in-development",
+      "install": "npm install @appport/appboundry",
+      "packages": [
+        {
+          "name": "@appport/appboundry",
+          "purpose": "Build, verify and run AppBoundry applications"
+        }
+      ]
     },
     {
       "id": "authboundry",
@@ -49,7 +93,18 @@
       "summary": "Authority and delegation for people and agents: policy evaluation, delegated authority and permission enforcement at system boundaries.",
       "responsibility": "Authority and delegation",
       "url": "https://authboundry.com",
-      "status": "in-development"
+      "status": "in-development",
+      "install": "npm install @authboundry/core",
+      "packages": [
+        {
+          "name": "@authboundry/core",
+          "purpose": "The authority boundary for an application"
+        },
+        {
+          "name": "@authboundry/bridge",
+          "purpose": "Authority bridge for existing applications"
+        }
+      ]
     }
   ]
 }
