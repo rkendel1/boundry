@@ -27,6 +27,7 @@ const { PORTFOLIO } = await import(pathToFileURL(join(ui, "esm/brand.js")).href)
 const { THEME_INIT_SCRIPT, THEME_STORAGE_KEY } = await import(pathToFileURL(join(ui, "esm/theme.js")).href);
 const brand = JSON.parse(readFileSync(join(ui, "brand/brand.json"), "utf8"));
 const site = JSON.parse(readFileSync(join(root, "content/site.json"), "utf8"));
+const NPM_NAME = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/;
 const { products } = JSON.parse(readFileSync(join(root, "content/products.json"), "utf8"));
 const YEAR = new Date().getFullYear();
 
@@ -48,6 +49,21 @@ for (const p of products) {
   if (!listed) errors.push(`product ${p.id}: not in the shared Boundry portfolio (vendor/stack-ui/esm/brand.js)`);
   else if (listed.name !== p.name) errors.push(`product ${p.id}: name "${p.name}" differs from the shared portfolio ("${listed.name}")`);
   if (!existsSync(join(root, "static/images/products", `${p.id}.png`))) errors.push(`product ${p.id}: logo missing (static/images/products/${p.id}.png)`);
+  if (p.packages != null) {
+    if (!Array.isArray(p.packages) || !p.packages.length) errors.push(`product ${p.id}: "packages" must be a non-empty list or absent`);
+    else {
+      const names = new Set();
+      for (const pkg of p.packages) {
+        if (!pkg || !NPM_NAME.test(pkg.name ?? "")) errors.push(`product ${p.id}: invalid npm package name "${pkg?.name}"`);
+        else if (names.has(pkg.name)) errors.push(`product ${p.id}: package ${pkg.name} listed twice`);
+        else names.add(pkg.name);
+        if (!pkg?.purpose || typeof pkg.purpose !== "string") errors.push(`product ${p.id}: package ${pkg?.name}: missing "purpose"`);
+      }
+      // The command shown must install (or create from) one of the listed packages.
+      const target = p.install && /^npm (?:install|i|create) (\S+?)(?:@latest)?(?:\s|$)/.exec(p.install)?.[1];
+      if (p.install != null && !(names.has(target) || names.has(`create-${target}`))) errors.push(`product ${p.id}: install "${p.install}" does not name a listed package`);
+    }
+  } else if (p.install != null) errors.push(`product ${p.id}: "install" needs "packages"`);
   if (p.status == null) warnings.push(`product ${p.id}: development status not set (Investors page shows "Shared in discussion")`);
 }
 for (const x of PORTFOLIO.products) if (!products.some((p) => p.id === x.id)) errors.push(`shared portfolio lists ${x.id}, missing from content/products.json`);
@@ -167,14 +183,19 @@ ${shared.SiteFooter({
 }
 
 // ---------------------------------------------------------------- shared fragments
+// A product's packages on the public npm registry (content/products.json → packages).
+const npmHref = (name) => `https://www.npmjs.com/package/${name}`;
+const npmLink = (pkg) => `<a class="ext mono" href="${npmHref(pkg.name)}" rel="noopener">${esc(pkg.name)}</a>`;
+const npmLinks = (p) => (p.packages?.length ? p.packages.map(npmLink).join(", ") : `<span class="muted">None published</span>`);
 const productCard = (p) => `
 <article class="product-card" ${productAttr(p)}>
   <header>${mark(p)}<div><div class="cat">${esc(p.category)}</div><h3>${esc(p.name)}</h3></div></header>
   <p>${esc(p.summary)}</p>
-  <div></div>
+  <div>${p.install ? `<code class="install">${esc(p.install)}</code>` : ""}</div>
   <footer>
     <a href="/ecosystem/#${p.id}">Overview</a>
-    ${p.url ? `<a class="ext" href="${p.url}" rel="noopener">${host(p.url)}</a>` : `<span class="nosite">Website not yet public</span>`}
+    ${p.url ? `<a class="ext" href="${p.url}" rel="noopener">${host(p.url)}</a>` : `<span class="nosite">No separate website</span>`}
+    ${p.packages?.length ? `<a class="ext" href="${npmHref(p.packages[0].name)}" rel="noopener">npm</a>` : ""}
   </footer>
 </article>`;
 
@@ -360,7 +381,8 @@ pages.push({
       <div class="desc"><p>${esc(p.summary)}</p></div>
       <dl>
         <dt>Responsibility</dt><dd>${esc(p.responsibility)}</dd>
-        <dt>Website</dt><dd>${p.url ? `<a class="ext" href="${p.url}" rel="noopener">${host(p.url)}</a>` : `<span class="muted">Not yet public</span>`}</dd>
+        <dt>Website</dt><dd>${p.url ? `<a class="ext" href="${p.url}" rel="noopener">${host(p.url)}</a>` : `<span class="muted">No separate website</span>`}</dd>
+        <dt>On npm</dt><dd>${p.packages?.length ? `<ul class="pkgs">${p.packages.map((pkg) => `<li>${npmLink(pkg)}<span>${esc(pkg.purpose)}</span></li>`).join("")}</ul>` : `<span class="muted">None published</span>`}</dd>
       </dl>
     </article>`
     )
@@ -540,12 +562,12 @@ pages.push({
     <p class="lede">We distinguish carefully between capabilities that exist today and development that is planned. The product scopes below describe each product's defined responsibility${anyStatus ? "; the status column reflects current development state" : ""}.</p>
   </div>
   <div class="table-wrap"><table>
-    <thead><tr><th scope="col">Product</th><th scope="col">Responsibility</th><th scope="col">Public site</th><th scope="col">Status</th></tr></thead>
+    <thead><tr><th scope="col">Product</th><th scope="col">Responsibility</th><th scope="col">Public site</th><th scope="col">npm</th><th scope="col">Status</th></tr></thead>
     <tbody>
     ${products
       .map(
         (p) =>
-          `<tr><td><span class="pname">${mark(p, "sm")}${esc(p.name)}</span></td><td>${esc(p.responsibility)}</td><td>${p.url ? `<a class="ext" href="${p.url}" rel="noopener">${host(p.url)}</a>` : `<span class="muted">Not yet public</span>`}</td><td>${statusCell(p)}</td></tr>`
+          `<tr><td><span class="pname">${mark(p, "sm")}${esc(p.name)}</span></td><td>${esc(p.responsibility)}</td><td>${p.url ? `<a class="ext" href="${p.url}" rel="noopener">${host(p.url)}</a>` : `<span class="muted">No separate website</span>`}</td><td>${npmLinks(p)}</td><td>${statusCell(p)}</td></tr>`
       )
       .join("")}
     </tbody>
@@ -626,13 +648,13 @@ pages.push({
 </div></section>
 
 <section class="section"><div class="wrap">
-  <div class="section-head"><div class="eyebrow">Products</div><h2>Product websites</h2></div>
+  <div class="section-head"><div class="eyebrow">Products</div><h2>Product websites and packages</h2></div>
   <div class="table-wrap"><table>
-    <thead><tr><th scope="col">Product</th><th scope="col">Focus</th><th scope="col">Website</th></tr></thead>
+    <thead><tr><th scope="col">Product</th><th scope="col">Focus</th><th scope="col">Website</th><th scope="col">npm</th></tr></thead>
     <tbody>${products
       .map(
         (p) =>
-          `<tr><td><span class="pname">${mark(p, "sm")}${esc(p.name)}</span></td><td>${esc(p.category)}</td><td>${p.url ? `<a class="ext" href="${p.url}" rel="noopener">${host(p.url)}</a>` : `<span class="muted">Not yet public</span>`}</td></tr>`
+          `<tr><td><span class="pname">${mark(p, "sm")}${esc(p.name)}</span></td><td>${esc(p.category)}</td><td>${p.url ? `<a class="ext" href="${p.url}" rel="noopener">${host(p.url)}</a>` : `<span class="muted">No separate website</span>`}</td><td>${npmLinks(p)}</td></tr>`
       )
       .join("")}</tbody>
   </table></div>

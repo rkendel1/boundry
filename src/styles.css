@@ -133,6 +133,7 @@ p { margin: 0; }
 .product-card footer a { text-decoration: none; border-bottom: 1px solid var(--line-strong); }
 .product-card footer a:hover { border-color: var(--ink); }
 .product-card footer .nosite { color: var(--muted); }
+.product-card .install { display: block; font-family: var(--mono); font-size: 13px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--line); padding: 8px 10px; overflow-wrap: anywhere; }
 @media (max-width: 960px) { .products { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 620px) { .products { grid-template-columns: 1fr; } }
 
@@ -146,6 +147,10 @@ p { margin: 0; }
 .prow dl { margin: 0; display: grid; gap: 4px 0; font-size: 14.5px; align-content: start; }
 .prow dt { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .prow dd { margin: 0 0 12px; }
+.prow .pkgs { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.prow .pkgs li { display: grid; gap: 1px; }
+.prow .pkgs a { overflow-wrap: anywhere; }
+.prow .pkgs span { color: var(--muted); font-size: 13px; }
 @media (max-width: 960px) { .prow { grid-template-columns: 1fr; gap: 20px; } }
 
 /* ---------- Architecture diagram ---------- */
