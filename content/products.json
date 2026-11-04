@@ -5,9 +5,9 @@
       "id": "feltkit",
       "name": "FeltKit",
       "mark": "FK",
-      "category": "Integrated product",
-      "summary": "Product one: a preassembled application stack that agents can operate, built on FeltDB and AppPort. Go from zero to a deployed application in minutes, with a studio to configure and maintain it, not just develop it.",
-      "responsibility": "Integrated product",
+      "category": "Commercial entry point",
+      "summary": "Where developers meet the Boundry thesis: build the application, deploy the artifact, evolve it at runtime. State, capabilities, agent access over AppPort and MCP, and Studio arrive preassembled, and one command compiles the application into an AppBoundry artifact.",
+      "responsibility": "Unified application development and operation",
       "url": "https://getfeltkit.com",
       "status": "preview",
       "install": "npm create feltkit@latest my-app",
@@ -27,8 +27,8 @@
       "name": "FeltDB",
       "mark": "FD",
       "category": "Application state",
-      "summary": "Durable state for applications and agents: atomic transactions, safe concurrency and reactive collections, with one API from the browser to Managed FeltDB, so application code does not change when the deployment does.",
-      "responsibility": "Application state",
+      "summary": "Durable state for applications and agents: atomic transactions, safe concurrency, reactive collections and state contracts, with one API from the browser to Managed FeltDB. It is also the control plane that records what Boundry systems decided and did.",
+      "responsibility": "Durable application state and control plane",
       "url": "https://feltdb.com",
       "status": "preview",
       "install": "npm install @feltdb/core",
@@ -47,9 +47,9 @@
       "id": "appport",
       "name": "AppPort",
       "mark": "AP",
-      "category": "Capabilities and services",
-      "summary": "Capabilities as contracts: discoverable, governed and reusable across applications, agents and technologies, together with the operational services applications need: files, notifications, configuration, jobs and webhooks.",
-      "responsibility": "Capabilities and operational services",
+      "category": "Capabilities and authority",
+      "summary": "Capabilities as contracts: discoverable, authorized and reusable across applications, agents and technologies. The AppPort family also includes AppPort Services, reusable operational capabilities, and Resolver, which resolves an application's dependencies at runtime.",
+      "responsibility": "Capability discovery and authority; operational services; runtime dependency resolution",
       "url": null,
       "status": "preview",
       "install": "npm install @appport/core",
@@ -65,6 +65,14 @@
         {
           "name": "appport",
           "purpose": "Command line interface"
+        },
+        {
+          "name": "@appport/resolver",
+          "purpose": "Resolver: typed, revisioned references resolved at runtime"
+        },
+        {
+          "name": "@appport/resolver-client",
+          "purpose": "Resolves references in an application, with live updates"
         }
       ]
     },
@@ -72,9 +80,9 @@
       "id": "appboundry",
       "name": "AppBoundry",
       "mark": "AB",
-      "category": "Application boundaries",
-      "summary": "Runs portable application artifacts inside a controlled boundary, reaching state and capabilities only through controlled interfaces.",
-      "responsibility": "Application boundaries and portable execution",
+      "category": "Artifact deployment and execution",
+      "summary": "Separates the application from its source repository. The repository produces a verified, content-addressed artifact; the artifact is the deployment unit; the runtime checks it, enforces its state and authority boundaries, and operates it without the source or build tooling.",
+      "responsibility": "Artifact deployment and execution",
       "url": "https://appboundry.com",
       "status": "in-development",
       "install": "npm install @appport/appboundry",

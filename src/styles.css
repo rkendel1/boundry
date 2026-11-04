@@ -134,6 +134,7 @@ p { margin: 0; }
 .product-card footer a:hover { border-color: var(--ink); }
 .product-card footer .nosite { color: var(--muted); }
 .product-card .install { display: block; font-family: var(--mono); font-size: 13px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--line); padding: 8px 10px; overflow-wrap: anywhere; }
+.col .install { display: block; font-family: var(--mono); font-size: 13px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--line); padding: 8px 10px; white-space: pre; overflow-x: auto; }
 @media (max-width: 960px) { .products { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 620px) { .products { grid-template-columns: 1fr; } }
 

@@ -3,8 +3,8 @@
   "name": "Boundry",
   "domain": "boundry.company",
   "origin": "https://boundry.company",
-  "tagline": "Infrastructure for applications and agents.",
-  "description": "Boundry builds infrastructure for applications that people and AI agents both use and operate: FeltDB for application state, AppPort for capabilities and operational services, and FeltKit, the integrated product built on them.",
+  "tagline": "Infrastructure for applications that people and AI agents use, operate, and evolve.",
+  "description": "Boundry builds infrastructure for applications that people and AI agents use, operate, and evolve: applications that are deployed independently of their source, operated with durable state and authority, and changed without a new release. FeltKit is where developers start.",
   "founder": {
     "_readme": "portrait: path to a supplied professional photo placed in ./static (e.g. \"/images/randy-kendel.jpg\"), or null. Never substitute a generated image.",
     "name": "Randy Kendel",
@@ -13,7 +13,7 @@
     "portrait": null,
     "portraitAlt": "Portrait of Randy Kendel",
     "bio": [
-      "Randy Kendel founded Boundry in 2026 and built its technology: FeltDB, AppPort and FeltKit.",
+      "Randy Kendel founded Boundry in 2026 and built its technology: FeltDB, AppPort, AppPort Services, AppBoundry, Resolver and FeltKit.",
       "Before Boundry he was a Product Manager – Technical at AWS, delivered CVS's Digital COVID Vaccine Scheduler across 9,600+ pharmacies in all 50 states, and ran his own technology consultancy, Kendel Consulting.",
       "A non-traditional developer, he builds to remove complexity, so creating software feels intuitive to more than the experienced few."
     ]
@@ -54,11 +54,13 @@
     "planned": "Planned"
   },
   "architecture": {
-    "_readme": "Rows are drawn top to bottom; the cells of a row share its width. The top row holds the products, the bottom row the foundation they are built on.",
+    "_readme": "Rows are drawn top to bottom; the cells of a row share its width. Top: FeltKit, the entry point. Middle: deployment, execution and authority. Bottom: the foundation.",
     "top": "People and agents",
     "rows": [
       [
-        "feltkit",
+        "feltkit"
+      ],
+      [
         "appboundry",
         "authboundry"
       ],
