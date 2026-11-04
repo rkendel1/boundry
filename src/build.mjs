@@ -217,7 +217,7 @@ function archDiagram() {
     ${side}
   </div>
   <figcaption class="arch-legend">
-    <span>Conceptual view. Top: FeltKit, the entry point. Middle: artifact deployment and execution, and authority. Bottom: FeltDB and AppPort (with AppPort Services, including Resolver), the foundation. Select a block for details.</span>
+    <span>Conceptual view. Top: Boundry's two products. Bottom: the ecosystem they are built on (AppPort includes AppPort Services and its Resolver capability). Select a block for details.</span>
   </figcaption>
 </figure>`;
 }
@@ -270,9 +270,9 @@ const principlesList = `<ol class="principles">${PRINCIPLES.map(
 // differentiate it, and maturity stated as working / demonstrated / planned.
 const thesisCols = `
 <div class="cols">
-  <div class="col"><span class="tag">01 · Use</span><h3>How applications are used</h3><p>How an application exposes what it does to people, to other software, and to AI agents: capabilities as contracts, reachable over AppPort and MCP, under one authority model.</p><span class="tag">AppPort</span></div>
-  <div class="col"><span class="tag">02 · Operate</span><h3>How applications are operated</h3><p>How an application manages its state, its authority, its execution, and the evidence of what happened: durable state with a contract, enforced roles, verified execution, recorded decisions.</p><span class="tag">FeltDB · AppBoundry · AppPort Services</span></div>
-  <div class="col"><span class="tag">03 · Evolve</span><h3>How applications change</h3><p>How an application changes without every change requiring a new release: the artifact is the deployment unit, and dependencies are references resolved at runtime.</p><span class="tag">AppBoundry · Resolver</span></div>
+  <div class="col"><span class="tag">01 · Use</span><h3>How applications are used</h3><p>How an application exposes what it does to people, to other software, and to AI agents: capabilities as contracts, reachable over AppPort and MCP, under one authority model.</p><span class="tag">FeltKit · AppPort</span></div>
+  <div class="col"><span class="tag">02 · Operate</span><h3>How applications are operated</h3><p>How an application manages its state, its authority, its execution, and the evidence of what happened: durable state with a contract, enforced roles, verified execution, recorded decisions.</p><span class="tag">FeltKit · AppBoundry · FeltDB</span></div>
+  <div class="col"><span class="tag">03 · Evolve</span><h3>How applications change</h3><p>How an application changes without every change requiring a new release: the artifact is the deployment unit, and dependencies are references resolved at runtime.</p><span class="tag">AppBoundry · AppPort Services</span></div>
 </div>`;
 
 const separations = `
@@ -291,6 +291,19 @@ const separations = `
   </div>
 </div>
 <p class="lede" style="margin-top:28px">Together, an application is coupled neither to the environment that produced it nor to the infrastructure currently supporting it.</p>`;
+
+// The company structure: Boundry controls the stack; two products on top; the ecosystem underneath.
+const companyStructure = `
+<div class="cols two">
+  <div class="col" ${productAttr(byId.feltkit)}><span class="tag">Product 1 · ${esc(byId.feltkit.name)}</span><h3>Build and operate applications</h3><p>Applications that people and agents use, with state, capabilities, agent access and Studio preassembled. The commercial entry point.</p><a class="textlink ext" href="${byId.feltkit.url}" rel="noopener">${host(byId.feltkit.url)}</a></div>
+  <div class="col" ${productAttr(byId.appboundry)}><span class="tag">Product 2 · ${esc(byId.appboundry.name)}</span><h3>Deploy and run applications as artifacts</h3><p>The repository produces a verified artifact; AppBoundry checks it and runs it, independent of the source and the build that produced it.</p><a class="textlink ext" href="${byId.appboundry.url}" rel="noopener">${host(byId.appboundry.url)}</a></div>
+</div>
+<div class="cols" style="margin-top:1px;border-top:0">
+  <div class="col"><span class="tag">Ecosystem · FeltDB</span><p>Durable state and the control plane, under both products.</p></div>
+  <div class="col"><span class="tag">Ecosystem · AppPort and AppPort Services</span><p>Capability discovery and authority, and reusable operational capabilities, Resolver among them.</p></div>
+  <div class="col"><span class="tag">Ecosystem · AuthBoundry</span><p>Authority and delegation for people and agents. Early.</p></div>
+</div>
+<p class="lede" style="margin-top:28px">Every layer is built and controlled by Boundry. No third-party database or capability platform sits under either product.</p>`;
 
 // What an application artifact carries, and how much of it works today.
 const OBJECT_ATTRS = [
@@ -311,21 +324,21 @@ const objectTable = `
   <tbody>${OBJECT_ATTRS.map(([a, b, s]) => `<tr><td><strong>${esc(a)}</strong><br><span class="status" style="margin-top:6px">${MATURITY[s]}</span></td><td class="dim">${esc(b)}</td></tr>`).join("")}</tbody>
 </table></div>`;
 
-// The technologies and their strategic contribution. AppPort Services belongs to AppPort, and
+// The products and the ecosystem, and their strategic contribution. AppPort Services belongs to AppPort, and
 // Resolver is a capability of AppPort Services (its own repository, rkendel1/resolver), so
 // neither has a portfolio entry of its own.
 const TECHNOLOGY = [
-  ["FeltDB", "feltdb", "Durable application state and control plane"],
-  ["AppPort", "appport", "Capability discovery and authority"],
-  ["AppBoundry", "appboundry", "Artifact deployment and execution"],
-  ["Resolver", null, "Runtime dependency resolution (a capability of AppPort Services)"],
-  ["AppPort Services", null, "Reusable operational capabilities (part of AppPort)"],
-  ["FeltKit", "feltkit", "Unified application development and operation"],
+  ["FeltKit", "feltkit", "Product 1", "Application development and operation"],
+  ["AppBoundry", "appboundry", "Product 2", "Artifact deployment and execution"],
+  ["FeltDB", "feltdb", "Ecosystem", "Durable application state and control plane"],
+  ["AppPort", "appport", "Ecosystem", "Capability discovery and authority"],
+  ["AppPort Services", null, "Ecosystem", "Reusable operational capabilities, Resolver among them (part of AppPort)"],
+  ["AuthBoundry", "authboundry", "Ecosystem", "Authority and delegation (early)"],
 ];
 const technologyTable = `
 <div class="table-wrap"><table>
-  <thead><tr><th scope="col">Technology</th><th scope="col">Strategic contribution</th></tr></thead>
-  <tbody>${TECHNOLOGY.map(([n, id, c]) => `<tr><td><span class="pname">${id ? mark(byId[id], "sm") : ""}${id ? `<a href="/ecosystem/#${id}">${esc(n)}</a>` : esc(n)}</span></td><td>${esc(c)}</td></tr>`).join("")}</tbody>
+  <thead><tr><th scope="col">Technology</th><th scope="col">Role</th><th scope="col">Strategic contribution</th></tr></thead>
+  <tbody>${TECHNOLOGY.map(([n, id, r, c]) => `<tr><td><span class="pname">${id ? mark(byId[id], "sm") : ""}${id ? `<a href="/ecosystem/#${id}">${esc(n)}</a>` : esc(n)}</span></td><td class="dim">${esc(r)}</td><td>${esc(c)}</td></tr>`).join("")}</tbody>
 </table></div>`;
 
 const maturityCols = `
@@ -382,7 +395,7 @@ pages.push({
   <div class="hero-copy">
     <div class="eyebrow">${site.name}</div>
     <h1>Infrastructure for applications that people and AI agents use, operate, and evolve.</h1>
-    <p class="lede">Applications should be independently deployable, operable, and adaptable. Boundry builds the infrastructure that makes them so: applications deployed independently of their source, operated with durable state and authority, and changed without a new release. FeltKit is where developers start.</p>
+    <p class="lede">Boundry controls the whole stack. FeltKit, product one, builds and operates applications; AppBoundry, product two, deploys and runs them as verified artifacts; and the ecosystem underneath gives them durable state, authority and dependencies resolved at runtime.</p>
     <div class="actions">
       <a class="btn" href="${byId.feltkit.url}" rel="noopener">Start with FeltKit <span class="arrow">→</span></a>
       <a class="btn secondary" href="/architecture/">How it works</a>
@@ -402,10 +415,10 @@ pages.push({
 
 <section class="section"><div class="wrap">
   <div class="section-head">
-    <div class="eyebrow">The differentiators</div>
-    <h2>Two separations, offered together</h2>
+    <div class="eyebrow">The company</div>
+    <h2>Boundry controls the stack. Two products sit on top.</h2>
   </div>
-  ${separations}
+  ${companyStructure}
 </div></section>
 
 <section class="section"><div class="wrap split">
@@ -420,8 +433,8 @@ pages.push({
 <section class="section"><div class="wrap">
   <div class="section-head">
     <div class="eyebrow">Where to start</div>
-    <h2>FeltKit: build the application, deploy the artifact, evolve it at runtime.</h2>
-    <p class="lede">Developers do not need to adopt five technologies to benefit from them. FeltKit is one experience: an application with state, capabilities, agent access and Studio preassembled, compiled by one command into an artifact AppBoundry runs, with dependencies Resolver can change at runtime.</p>
+    <h2>Start with FeltKit: build the application, deploy the artifact, evolve it at runtime.</h2>
+    <p class="lede">Developers do not adopt the ecosystem piece by piece. FeltKit is one experience: an application with state, capabilities, agent access and Studio preassembled, compiled by one command into an artifact AppBoundry runs, with dependencies an AppPort Services capability, Resolver, can change at runtime.</p>
   </div>
   <div class="cols">
     <div class="col"><span class="tag">1 · Build</span><code class="install">npm create feltkit@latest my-app</code><p>Data, functions, roles and capabilities in TypeScript.</p></div>
@@ -435,13 +448,13 @@ pages.push({
   <div class="section-head">
     <div class="eyebrow">Products</div>
     <h2>Independently useful. Designed to work together.</h2>
-    <p class="lede">Each technology does one job and is consumed through its published contract. FeltKit brings them together as the entry point; AuthBoundry is an earlier-stage product on the same foundation.</p>
+    <p class="lede">Two products, FeltKit and AppBoundry, on an ecosystem of the founder's other products. Each does one job and is consumed through its published contract; AuthBoundry is the earliest.</p>
   </div>
   <div class="products">${products.map(productCard).join("")}${products.length % 3 ? `
     <article class="product-card product-card--more">
       <div class="cat">How they fit together</div>
       <h3>One architecture, independent products</h3>
-      <p>FeltKit on top; AppBoundry and Resolver for deployment and evolution; FeltDB and AppPort underneath.</p>
+      <p>FeltKit and AppBoundry on top; FeltDB, AppPort and AuthBoundry underneath.</p>
       <div></div>
       <footer><a href="/architecture/">Architecture</a><a href="/ecosystem/">Ecosystem</a></footer>
     </article>` : ""}</div>
@@ -451,7 +464,7 @@ pages.push({
   <div style="display:grid;gap:18px">
     <div class="eyebrow">Architecture</div>
     <h2>Distinct responsibilities, not overlapping products.</h2>
-    <p class="lede">State lives in FeltDB. Capabilities live in AppPort, and operational capabilities, Resolver among them, in AppPort Services. AppBoundry deploys and runs artifacts. FeltKit composes them into one experience.</p>
+    <p class="lede">FeltKit builds and operates applications; AppBoundry deploys and runs them. Underneath, state lives in FeltDB, capabilities in AppPort, operational capabilities (Resolver among them) in AppPort Services, and authority and delegation in AuthBoundry.</p>
     <p><a class="textlink" href="/architecture/">See the architecture →</a></p>
   </div>
   ${archDiagram()}
@@ -478,8 +491,8 @@ pages.push({
   body: `
 <section class="page-head"><div class="wrap">
   <div class="eyebrow">Ecosystem</div>
-  <h1>Independently useful technologies that work together.</h1>
-  <p class="lede">FeltKit is where developers start. AppBoundry separates applications from their repositories; Resolver, a capability of AppPort Services, separates them from the implementations of their dependencies. FeltDB and AppPort are the foundation. Each keeps its own identity and its own home.</p>
+  <h1>Two products, and the ecosystem under them.</h1>
+  <p class="lede">FeltKit is product one and AppBoundry product two. FeltDB, AppPort (with AppPort Services and its Resolver capability) and AuthBoundry are the founder's other products, and form the ecosystem both are built on. Each keeps its own identity and its own home.</p>
 </div></section>
 
 <section class="section" style="padding-top:0;border-top:0"><div class="wrap">
@@ -507,7 +520,7 @@ pages.push({
     <h2>One responsibility per product.</h2>
   </div>
   <div class="prose">
-    <p>The ecosystem is organized by responsibility rather than by feature. FeltDB owns application state and records what the platform decided and did. AppPort owns capabilities and authority; AppPort Services provides reusable operational capabilities, among them Resolver, which resolves an application's dependencies at runtime. AppBoundry deploys and runs application artifacts. FeltKit composes them into one experience. AuthBoundry extends the foundation to authority and delegation.</p>
+    <p>Boundry's products and its ecosystem are organized by responsibility rather than by feature. FeltKit builds and operates applications; AppBoundry deploys and runs them. Underneath, FeltDB owns application state and records what the platform decided and did. AppPort owns capabilities and authority; AppPort Services provides reusable operational capabilities, among them Resolver, which resolves an application's dependencies at runtime. AuthBoundry extends the ecosystem to authority and delegation.</p>
     <p>That separation is what lets a team adopt a single component without taking on the whole platform — and what lets the ecosystem grow by adding new responsibilities rather than by enlarging existing products.</p>
     <p style="margin-top:1.4em"><a class="textlink" href="/architecture/">Explore the architecture →</a></p>
   </div>
@@ -535,7 +548,15 @@ pages.push({
 
 <section class="section"><div class="wrap">
   <div class="section-head">
-    <div class="eyebrow">Two separations</div>
+    <div class="eyebrow">Products and ecosystem</div>
+    <h2>Two products on a stack Boundry controls.</h2>
+  </div>
+  ${companyStructure}
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="section-head">
+    <div class="eyebrow">What the stack separates</div>
     <h2>Independent of its source. Independent of its dependencies.</h2>
   </div>
   ${separations}
@@ -553,8 +574,8 @@ pages.push({
 <section class="section"><div class="wrap">
   <div class="section-head">
     <div class="eyebrow">The technologies</div>
-    <h2>Six technologies, one thesis.</h2>
-    <p class="lede">Each contributes one part of using, operating and evolving applications. Someone can adopt FeltKit without first understanding, or separately adopting, any of the others.</p>
+    <h2>Two products, one ecosystem.</h2>
+    <p class="lede">Each contributes one part of using, operating and evolving applications. A customer adopts FeltKit or AppBoundry without separately adopting the ecosystem underneath.</p>
   </div>
   ${technologyTable}
 </div></section>
@@ -598,8 +619,8 @@ pages.push({
   <div class="prose">
     <p><strong>FeltDB</strong> is application state and the control plane: durable, atomic and reactive, with state contracts the host enforces, and one API wherever state lives.</p>
     <p><strong>AppPort</strong> is capability discovery and authority: each capability a contract that applications and agents can discover and reuse across technologies. <strong>AppPort Services</strong> provides reusable operational capabilities (files, notifications, configuration, jobs, webhooks). One of them, <strong>Resolver</strong>, resolves an application's declared dependencies at runtime, with history, rollback and a receipt for each use.</p>
-    <p><strong>AppBoundry</strong> deploys and runs application artifacts: it verifies them, enforces their state and authority boundaries, and reports which module it is running.</p>
-    <p><strong>FeltKit</strong> is the entry point: build the application, deploy the artifact, evolve it at runtime.</p>
+    <p><strong>AppBoundry</strong> (product two) deploys and runs application artifacts: it verifies them, enforces their state and authority boundaries, and reports which module it is running.</p>
+    <p><strong>FeltKit</strong>, product one, is the entry point: build the application, deploy the artifact, evolve it at runtime. <strong>AppBoundry</strong>, product two, runs the artifact. <strong>AuthBoundry</strong> governs authority and delegation for people and agents, and is early.</p>
     <p><strong>AuthBoundry</strong> governs authority and delegation for people and agents.</p>
   </div>
 </div></section>
@@ -662,11 +683,11 @@ pages.push({
   body: `
 <section class="page-head"><div class="wrap">
   <div class="eyebrow">Investors</div>
-  <h1>Applications that are independently deployable, operable, and adaptable.</h1>
-  <p class="lede">Boundry builds infrastructure for software that can be produced by developers and agents, deployed independently of its source, operated with durable authority and state, and evolved without constantly rebuilding the application. FeltKit is the commercial entry point.</p>
+  <h1>One company, two products, a stack it controls.</h1>
+  <p class="lede">Boundry builds infrastructure for applications that people and AI agents use, operate, and evolve. FeltKit is product one and the commercial entry point; AppBoundry is product two; the founder's other products form the ecosystem under both.</p>
   <ul class="toc" aria-label="On this page">
     <li><a href="#overview">Overview</a></li>
-    <li><a href="#differentiators">Differentiators</a></li>
+    <li><a href="#company">Company</a></li>
     <li><a href="#portfolio">Portfolio</a></li>
     <li><a href="#progress">Technology &amp; progress</a></li>
     <li><a href="#opportunity">Commercial opportunity</a></li>
@@ -688,20 +709,19 @@ pages.push({
   ${thesisCols}
 </div></section>
 
-<section class="section" id="differentiators"><div class="wrap">
+<section class="section" id="company"><div class="wrap">
   <div class="section-head">
-    <div class="eyebrow">Differentiators</div>
-    <h2>AppBoundry and Resolver.</h2>
-    <p class="lede">Two architectural separations that traditional application platforms do not generally offer as one proposition.</p>
+    <div class="eyebrow">The company</div>
+    <h2>Boundry controls the stack. Two products sit on top.</h2>
   </div>
-  ${separations}
+  ${companyStructure}
 </div></section>
 
 <section class="section" id="portfolio"><div class="wrap">
   <div class="section-head">
     <div class="eyebrow">Portfolio &amp; shared architecture</div>
-    <h2>One entry point. The technology underneath.</h2>
-    <p class="lede">FeltKit is where developers experience the thesis. The technologies underneath provide the differentiation, and each is consumed through its published contract, so a customer can adopt FeltKit without adopting the rest separately.</p>
+    <h2>Two products. The ecosystem underneath.</h2>
+    <p class="lede">FeltKit and AppBoundry are what customers adopt. The ecosystem underneath provides the differentiation, and each part is consumed through its published contract.</p>
   </div>
   ${technologyTable}
   <div style="margin-top:40px">${archDiagram()}</div>
@@ -732,13 +752,13 @@ pages.push({
 <section class="section" id="opportunity"><div class="wrap">
   <div class="section-head">
     <div class="eyebrow">Commercial opportunity</div>
-    <h2>Adopt FeltKit first. The platform follows the application.</h2>
+    <h2>Product 1 brings the customer. Product 2 and the ecosystem follow.</h2>
     <p class="lede">The opportunities below describe the potential of the model, not current commercial results.</p>
   </div>
   <div class="cols">
-    <div class="col"><span class="tag">Potential · Entry point</span><h3>FeltKit</h3><p>One experience for developers and small teams building applications that people and agents operate: build the application, deploy the artifact, evolve it at runtime. The nearest route to revenue.</p></div>
-    <div class="col"><span class="tag">Potential · Hosted runtime</span><h3>Managed AppBoundry</h3><p>Applications leave the repository as verified artifacts. Running them, with their state, on Boundry-operated infrastructure is the natural next step for a FeltKit team. Designed, not yet built.</p></div>
-    <div class="col"><span class="tag">Potential · Platform</span><h3>Beyond FeltKit</h3><p>AppPort capabilities and AppPort Services, Resolver included, are contracts, so applications not built with FeltKit can use them too, including existing systems.</p></div>
+    <div class="col"><span class="tag">Potential · Product 1</span><h3>FeltKit</h3><p>One experience for developers and small teams building applications that people and agents operate: build the application, deploy the artifact, evolve it at runtime. The nearest route to revenue.</p></div>
+    <div class="col"><span class="tag">Potential · Product 2</span><h3>AppBoundry, managed</h3><p>Applications leave the repository as verified artifacts. Running them, with their state, on Boundry-operated infrastructure is the natural next step for a FeltKit team. Designed, not yet built.</p></div>
+    <div class="col"><span class="tag">Potential · Ecosystem</span><h3>Beyond the products</h3><p>FeltDB, AppPort capabilities and AppPort Services, Resolver included, are contracts, so applications not built with FeltKit can use them too, including existing systems.</p></div>
   </div>
   <div class="section-head" style="margin-top:clamp(48px,6vw,72px);margin-bottom:24px"><h3>Potential distribution</h3></div>
   <div class="cols">
@@ -752,9 +772,9 @@ pages.push({
   <div style="display:grid;gap:18px"><div class="eyebrow">Roadmap &amp; direction</div><h2>Where the company is going.</h2></div>
   <div>
     <ol class="principles" style="margin-bottom:24px">
-      <li><span class="num">01</span><span class="over">Commercialize FeltKit</span><span class="over-not" style="font-size:15.5px">From design partners to paying teams.</span></li>
-      <li><span class="num">02</span><span class="over">Managed artifact hosting</span><span class="over-not" style="font-size:15.5px">Upload, deploy and observe AppBoundry artifacts, after the backup-restore fix.</span></li>
-      <li><span class="num">03</span><span class="over">Extend Resolver</span><span class="over-not" style="font-size:15.5px">From model references to endpoints, credentials and configuration values.</span></li>
+      <li><span class="num">01</span><span class="over">Commercialize FeltKit (product 1)</span><span class="over-not" style="font-size:15.5px">From design partners to paying teams.</span></li>
+      <li><span class="num">02</span><span class="over">Managed AppBoundry (product 2)</span><span class="over-not" style="font-size:15.5px">Upload, deploy and observe AppBoundry artifacts, after the backup-restore fix.</span></li>
+      <li><span class="num">03</span><span class="over">Grow the ecosystem</span><span class="over-not" style="font-size:15.5px">Resolver beyond model references; AuthBoundry under both products.</span></li>
       <li><span class="num">04</span><span class="over">Harden toward 1.0</span><span class="over-not" style="font-size:15.5px">Stability, security review and documentation across the stack.</span></li>
     </ol>
     <p class="muted" style="font-size:15px">This describes direction, not dated commitments. A detailed product roadmap is available in investment discussions.</p>
@@ -766,7 +786,7 @@ pages.push({
   <div style="display:grid;gap:16px">
     <div class="eyebrow">Investment discussions</div>
     <h2>Talk with Boundry.</h2>
-    <p class="lede">For investment discussions, the deck, or a technical walkthrough of the artifact runtime and Resolver.</p>
+    <p class="lede">For investment discussions, the deck, or a technical walkthrough of FeltKit, AppBoundry and the ecosystem.</p>
   </div>
   <div class="actions"><a class="btn" href="${mailto("Investment discussion")}">${site.contact.email} <span class="arrow">→</span></a></div>
 </div></section>

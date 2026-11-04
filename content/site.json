@@ -4,7 +4,7 @@
   "domain": "boundry.company",
   "origin": "https://boundry.company",
   "tagline": "Infrastructure for applications that people and AI agents use, operate, and evolve.",
-  "description": "Boundry builds infrastructure for applications that people and AI agents use, operate, and evolve: applications that are deployed independently of their source, operated with durable state and authority, and changed without a new release. FeltKit is where developers start.",
+  "description": "Boundry builds infrastructure for applications that people and AI agents use, operate, and evolve, and controls the whole stack: FeltKit is product one, AppBoundry is product two, and FeltDB, AppPort, AppPort Services and AuthBoundry form the ecosystem underneath.",
   "founder": {
     "_readme": "portrait: path to a supplied professional photo placed in ./static (e.g. \"/images/randy-kendel.jpg\"), or null. Never substitute a generated image.",
     "name": "Randy Kendel",
@@ -54,19 +54,17 @@
     "planned": "Planned"
   },
   "architecture": {
-    "_readme": "Rows are drawn top to bottom; the cells of a row share its width. Top: FeltKit, the entry point. Middle: deployment, execution and authority. Bottom: the foundation.",
+    "_readme": "Rows are drawn top to bottom; the cells of a row share its width. Top: Boundry's two products. Bottom: the ecosystem they are built on.",
     "top": "People and agents",
     "rows": [
       [
-        "feltkit"
+        "feltkit",
+        "appboundry"
       ],
       [
-        "appboundry",
-        "authboundry"
-      ],
-      [
+        "feltdb",
         "appport",
-        "feltdb"
+        "authboundry"
       ]
     ]
   }
