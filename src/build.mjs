@@ -217,7 +217,7 @@ function archDiagram() {
     ${side}
   </div>
   <figcaption class="arch-legend">
-    <span>Conceptual view. Top: FeltKit, the entry point. Middle: artifact deployment and execution, and authority. Bottom: FeltDB and AppPort (with AppPort Services and Resolver), the foundation. Select a block for details.</span>
+    <span>Conceptual view. Top: FeltKit, the entry point. Middle: artifact deployment and execution, and authority. Bottom: FeltDB and AppPort (with AppPort Services, including Resolver), the foundation. Select a block for details.</span>
   </figcaption>
 </figure>`;
 }
@@ -311,14 +311,15 @@ const objectTable = `
   <tbody>${OBJECT_ATTRS.map(([a, b, s]) => `<tr><td><strong>${esc(a)}</strong><br><span class="status" style="margin-top:6px">${MATURITY[s]}</span></td><td class="dim">${esc(b)}</td></tr>`).join("")}</tbody>
 </table></div>`;
 
-// The technologies and their strategic contribution. Resolver and AppPort Services are
-// part of the AppPort family, so they have no portfolio entry of their own.
+// The technologies and their strategic contribution. AppPort Services belongs to AppPort, and
+// Resolver is a capability of AppPort Services (its own repository, rkendel1/resolver), so
+// neither has a portfolio entry of its own.
 const TECHNOLOGY = [
   ["FeltDB", "feltdb", "Durable application state and control plane"],
   ["AppPort", "appport", "Capability discovery and authority"],
   ["AppBoundry", "appboundry", "Artifact deployment and execution"],
-  ["Resolver", null, "Runtime dependency resolution (AppPort family)"],
-  ["AppPort Services", null, "Reusable operational capabilities (AppPort family)"],
+  ["Resolver", null, "Runtime dependency resolution (a capability of AppPort Services)"],
+  ["AppPort Services", null, "Reusable operational capabilities (part of AppPort)"],
   ["FeltKit", "feltkit", "Unified application development and operation"],
 ];
 const technologyTable = `
@@ -450,7 +451,7 @@ pages.push({
   <div style="display:grid;gap:18px">
     <div class="eyebrow">Architecture</div>
     <h2>Distinct responsibilities, not overlapping products.</h2>
-    <p class="lede">State lives in FeltDB. Capabilities, services and dependency resolution live in the AppPort family. AppBoundry deploys and runs artifacts. FeltKit composes them into one experience.</p>
+    <p class="lede">State lives in FeltDB. Capabilities live in AppPort, and operational capabilities, Resolver among them, in AppPort Services. AppBoundry deploys and runs artifacts. FeltKit composes them into one experience.</p>
     <p><a class="textlink" href="/architecture/">See the architecture →</a></p>
   </div>
   ${archDiagram()}
@@ -473,12 +474,12 @@ ${ctaBand("Building applications or agents on serious infrastructure?", "Talk wi
 pages.push({
   path: "/ecosystem/",
   title: "Ecosystem",
-  description: "The Boundry ecosystem: FeltKit, AppBoundry, FeltDB, AppPort (with AppPort Services and Resolver) and AuthBoundry — independently useful infrastructure for applications that people and agents use, operate, and evolve.",
+  description: "The Boundry ecosystem: FeltKit, AppBoundry, FeltDB, AppPort (with AppPort Services and its Resolver capability) and AuthBoundry — independently useful infrastructure for applications that people and agents use, operate, and evolve.",
   body: `
 <section class="page-head"><div class="wrap">
   <div class="eyebrow">Ecosystem</div>
   <h1>Independently useful technologies that work together.</h1>
-  <p class="lede">FeltKit is where developers start. AppBoundry separates applications from their repositories; Resolver, in the AppPort family, separates them from the implementations of their dependencies. FeltDB and AppPort are the foundation. Each keeps its own identity and its own home.</p>
+  <p class="lede">FeltKit is where developers start. AppBoundry separates applications from their repositories; Resolver, a capability of AppPort Services, separates them from the implementations of their dependencies. FeltDB and AppPort are the foundation. Each keeps its own identity and its own home.</p>
 </div></section>
 
 <section class="section" style="padding-top:0;border-top:0"><div class="wrap">
@@ -506,7 +507,7 @@ pages.push({
     <h2>One responsibility per product.</h2>
   </div>
   <div class="prose">
-    <p>The ecosystem is organized by responsibility rather than by feature. FeltDB owns application state and records what the platform decided and did. AppPort owns capabilities and authority; AppPort Services provides reusable operational capabilities, and Resolver resolves an application's dependencies at runtime. AppBoundry deploys and runs application artifacts. FeltKit composes them into one experience. AuthBoundry extends the foundation to authority and delegation.</p>
+    <p>The ecosystem is organized by responsibility rather than by feature. FeltDB owns application state and records what the platform decided and did. AppPort owns capabilities and authority; AppPort Services provides reusable operational capabilities, among them Resolver, which resolves an application's dependencies at runtime. AppBoundry deploys and runs application artifacts. FeltKit composes them into one experience. AuthBoundry extends the foundation to authority and delegation.</p>
     <p>That separation is what lets a team adopt a single component without taking on the whole platform — and what lets the ecosystem grow by adding new responsibilities rather than by enlarging existing products.</p>
     <p style="margin-top:1.4em"><a class="textlink" href="/architecture/">Explore the architecture →</a></p>
   </div>
@@ -596,7 +597,7 @@ pages.push({
   </div>
   <div class="prose">
     <p><strong>FeltDB</strong> is application state and the control plane: durable, atomic and reactive, with state contracts the host enforces, and one API wherever state lives.</p>
-    <p><strong>AppPort</strong> is capability discovery and authority: each capability a contract that applications and agents can discover and reuse across technologies. <strong>AppPort Services</strong> provides reusable operational capabilities (files, notifications, configuration, jobs, webhooks), and <strong>Resolver</strong> resolves an application's declared dependencies at runtime, with history, rollback and a receipt for each use.</p>
+    <p><strong>AppPort</strong> is capability discovery and authority: each capability a contract that applications and agents can discover and reuse across technologies. <strong>AppPort Services</strong> provides reusable operational capabilities (files, notifications, configuration, jobs, webhooks). One of them, <strong>Resolver</strong>, resolves an application's declared dependencies at runtime, with history, rollback and a receipt for each use.</p>
     <p><strong>AppBoundry</strong> deploys and runs application artifacts: it verifies them, enforces their state and authority boundaries, and reports which module it is running.</p>
     <p><strong>FeltKit</strong> is the entry point: build the application, deploy the artifact, evolve it at runtime.</p>
     <p><strong>AuthBoundry</strong> governs authority and delegation for people and agents.</p>
@@ -737,7 +738,7 @@ pages.push({
   <div class="cols">
     <div class="col"><span class="tag">Potential · Entry point</span><h3>FeltKit</h3><p>One experience for developers and small teams building applications that people and agents operate: build the application, deploy the artifact, evolve it at runtime. The nearest route to revenue.</p></div>
     <div class="col"><span class="tag">Potential · Hosted runtime</span><h3>Managed AppBoundry</h3><p>Applications leave the repository as verified artifacts. Running them, with their state, on Boundry-operated infrastructure is the natural next step for a FeltKit team. Designed, not yet built.</p></div>
-    <div class="col"><span class="tag">Potential · Platform</span><h3>Beyond FeltKit</h3><p>AppPort capabilities, AppPort Services and Resolver are contracts, so applications not built with FeltKit can use them too, including existing systems.</p></div>
+    <div class="col"><span class="tag">Potential · Platform</span><h3>Beyond FeltKit</h3><p>AppPort capabilities and AppPort Services, Resolver included, are contracts, so applications not built with FeltKit can use them too, including existing systems.</p></div>
   </div>
   <div class="section-head" style="margin-top:clamp(48px,6vw,72px);margin-bottom:24px"><h3>Potential distribution</h3></div>
   <div class="cols">

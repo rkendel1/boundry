@@ -48,7 +48,7 @@
       "name": "AppPort",
       "mark": "AP",
       "category": "Capabilities and authority",
-      "summary": "Capabilities as contracts: discoverable, authorized and reusable across applications, agents and technologies. The AppPort family also includes AppPort Services, reusable operational capabilities, and Resolver, which resolves an application's dependencies at runtime.",
+      "summary": "Capabilities as contracts: discoverable, authorized and reusable across applications, agents and technologies. AppPort Services adds reusable operational capabilities, among them Resolver, which resolves an application's dependencies at runtime.",
       "responsibility": "Capability discovery and authority; operational services; runtime dependency resolution",
       "url": null,
       "status": "preview",
@@ -68,7 +68,7 @@
         },
         {
           "name": "@appport/resolver",
-          "purpose": "Resolver: typed, revisioned references resolved at runtime"
+          "purpose": "Resolver, an AppPort Services capability: references resolved at runtime"
         },
         {
           "name": "@appport/resolver-client",
