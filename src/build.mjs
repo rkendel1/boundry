@@ -281,7 +281,7 @@ const separations = `
     <span class="tag">AppBoundry</span>
     <h3>Separates the application from its source repository</h3>
     <p>The repository produces the artifact. The artifact is the deployment unit. The runtime verifies it and operates it, with no source and no build tooling beside it.</p>
-    <code class="install">npx feltkit build --target appboundry</code>
+    <code class="install">npx feltkit deploy --target appboundry</code>
   </div>
   <div class="col">
     <span class="tag">Resolver</span>
@@ -346,17 +346,19 @@ const maturityCols = `
   <div class="col"><span class="tag">Working · in published packages, under test</span><ul>
     <li>FeltKit (<span class="mono">@feltdb/feltkit</span> 0.3.14): starter, developer workflow, Studio, agent access over AppPort and MCP</li>
     <li>FeltDB, AppPort and AppPort Services on npm</li>
-    <li>AppBoundry (<span class="mono">@appport/appboundry</span> 1.7.2): verified artifacts, state contracts, migrations, enforced authority</li>
+    <li>AppBoundry (<span class="mono">@appport/appboundry</span> 1.7.3): verified artifacts, state contracts, migrations, enforced authority, backups</li>
     <li>Resolver (<span class="mono">@appport/resolver</span> 0.2.0): runtime model references with receipts</li>
   </ul></div>
   <div class="col"><span class="tag">Demonstrated · deployed and measured</span><ul>
-    <li>A FeltKit application run from its artifact on Fly, then on our own server in a hardened, resource-limited container; the runtime reported the expected module identity on both</li>
+    <li>AppBoundry's managed-hosting foundation: artifacts uploaded, verified independently, deployed by a pull-based host agent, and Running only on the runtime's own evidence; all 12 acceptance criteria passed with a real FeltKit app on our server (staging)</li>
+    <li>A FeltKit application run from its artifact on Fly and on our own server; the runtime reported the expected module identity on both</li>
     <li>A deployed application's model switched in Resolver with no rebuild, redeploy or restart (end-to-end test)</li>
     <li>FeltKit's runtime and AppBoundry agree on every state-contract step (parity test)</li>
   </ul></div>
   <div class="col"><span class="tag">Planned · designed or next, not built</span><ul>
-    <li>Managed hosting of artifacts: upload, deploy, observe (designed, not implemented)</li>
-    <li>A backup-restore fix found during deployment testing, the first gate for managed hosting</li>
+    <li>Deploying from the FeltKit CLI through AppBoundry: FeltKit's side is built; AppBoundry's deploy tokens are next</li>
+    <li>Hardening gates and public routing for managed hosting</li>
+    <li>Shared, per-call execution and metering: pay for work, not servers</li>
     <li>Tenant isolation beyond containers</li>
     <li>Resolver for endpoints, credentials and configuration values</li>
   </ul></div>
@@ -438,7 +440,7 @@ pages.push({
   </div>
   <div class="cols">
     <div class="col"><span class="tag">1 · Build</span><code class="install">npm create feltkit@latest my-app</code><p>Data, functions, roles and capabilities in TypeScript.</p></div>
-    <div class="col"><span class="tag">2 · Deploy</span><code class="install">npx feltkit build --target appboundry</code><p>A verified, self-contained artifact, run without its source.</p></div>
+    <div class="col"><span class="tag">2 · Deploy</span><code class="install">npx feltkit deploy --target appboundry</code><p>FeltKit builds a verified artifact; AppBoundry deploys and operates it. No servers to manage.</p></div>
     <div class="col"><span class="tag">3 · Evolve</span><code class="install">resolver set ref://prod/chat/model …</code><p>Retarget a dependency; the running application picks it up, with a receipt.</p></div>
   </div>
   <p style="margin-top:24px"><a class="textlink ext" href="${byId.feltkit.url}" rel="noopener">${host(byId.feltkit.url)}</a></p>
@@ -689,6 +691,7 @@ pages.push({
     <li><a href="#overview">Overview</a></li>
     <li><a href="#company">Company</a></li>
     <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#economics">Economics</a></li>
     <li><a href="#progress">Technology &amp; progress</a></li>
     <li><a href="#opportunity">Commercial opportunity</a></li>
     <li><a href="#direction">Direction</a></li>
@@ -747,6 +750,19 @@ pages.push({
     </tbody>
   </table></div>
   <p class="note" style="margin-top:24px">Detailed technical status, demonstrations, and evidence of working functionality for each product are provided directly in investment discussions. This page intentionally contains no customer, revenue, funding, partnership, or market-size claims.</p>
+</div></section>
+
+<section class="section" id="economics"><div class="wrap">
+  <div class="section-head">
+    <div class="eyebrow">Direction · not yet built</div>
+    <h2>From servers to work.</h2>
+    <p class="lede">Today every application pays for its own running server, whether anyone uses it or not. Because a Boundry application is an immutable artifact whose state lives in FeltDB, execution can be shared: idle applications cost mainly their stored state, and customers pay for the work their applications perform. Today each deployment still runs in its own always-on container; shared, per-call execution is the architectural direction.</p>
+  </div>
+  <div class="cols">
+    <div class="col"><span class="tag">Development</span><h3>FeltKit</h3><p>The developer experience: build, configure and operate the application.</p></div>
+    <div class="col"><span class="tag">Persistence</span><h3>FeltDB</h3><p>Durable state and operations, independent of where the application executes.</p></div>
+    <div class="col"><span class="tag">Execution</span><h3>AppBoundry</h3><p>Application work, metered by use rather than by provisioned servers, once shared execution exists.</p></div>
+  </div>
 </div></section>
 
 <section class="section" id="opportunity"><div class="wrap">
