@@ -1,0 +1,458 @@
+{
+  "_readme": "The Boundry stack map (/stack/). Components that are Boundry products set 'product' to their id in content/products.json; their name, website, npm packages and published status come from there, never from here. Other components set 'name' and a two-letter 'mark'. 'partOf' names the product a component ships in. Every id referenced anywhere in this file (layers, composes, lifecycle, example, independence, boundaries, agents) must resolve, or the build fails. 'position' is the known implementation position as of 'asOf'; it is not a claim of operational verification.",
+  "asOf": "2026-11-06",
+  "asOfLabel": "the 6 November 2026 deployment checkpoint",
+  "thesis": "Boundry is not a collection of products that happen to integrate. It is a set of independently useful infrastructure capabilities that compose into a complete application operating system.",
+  "outcome": "Own less. Build more. Change freely.",
+  "outcomeLede": "Durable applications whose capabilities, authority, execution, dependencies and evidence remain understandable independently of the models and infrastructure providers they use.",
+  "centralThesis": "Boundry is not selling a database, an agent framework, a deployment platform or a collection of APIs. It is selling the ability to build and operate applications without owning all the infrastructure, integration and operational complexity that normally comes with them. FeltKit is the product that makes that combined value accessible to developers.",
+  "layers": [
+    { "id": "experience", "title": "Developer experience", "summary": "Build · Verify · Package · Deploy · Operate", "components": ["feltkit"] },
+    { "id": "capabilities", "title": "Application capabilities", "components": ["appport", "authboundry", "appport-services"] },
+    { "id": "runtime", "title": "Application lifecycle and runtime", "components": ["appboundry", "resolver", "intent"] },
+    { "id": "foundation", "title": "Durable foundation", "components": ["feltdb"] },
+    {
+      "id": "infrastructure",
+      "title": "Infrastructure",
+      "items": ["Hetzner", "Containers", "Object storage", "Caddy", "Network", "Host operations"],
+      "summary": "The physical and operational substrate. Replaceable without changing the product responsibilities above it."
+    }
+  ],
+  "crossCutting": "Evidence, observability, provenance, human and agent authority",
+  "order": ["feltdb", "appport", "appport-services", "authboundry", "appboundry", "resolver", "intent", "feltkit"],
+  "components": [
+    {
+      "id": "feltdb",
+      "product": "feltdb",
+      "kicker": "Foundation",
+      "question": "What is true?",
+      "tagline": "The authoritative source of truth.",
+      "responsibility": "Own durable records, state transitions, transactions, and the authority to establish what the system believes to be true.",
+      "capabilities": [
+        "Durable append-only state.",
+        "Transactional updates and idempotency.",
+        "Key-based access and authorization boundaries.",
+        "Audit and evidence records.",
+        "Application and platform control-plane state.",
+        "Managed state access through the Managed service."
+      ],
+      "independent": [
+        "FeltDB can be used as a durable state and transaction system without FeltKit, AppPort, Resolver or AppBoundry.",
+        "A developer can build an application around FeltDB directly."
+      ],
+      "composes": [
+        { "id": "appport", "how": "Capabilities read and change durable application state." },
+        { "id": "authboundry", "how": "Authorization governs who can access or change it." },
+        { "id": "appboundry", "how": "Deployment and execution lifecycle records." },
+        { "id": "resolver", "how": "Durable records can establish configuration and reference state." },
+        { "id": "intent", "how": "Intent persists its authoritative state through FeltDB." },
+        { "id": "feltkit", "how": "Gives developers an integrated way to use it." }
+      ],
+      "value": [
+        "Developers no longer have to assemble and maintain their own persistence, transaction, idempotency and audit infrastructure.",
+        "The larger value is that application state and infrastructure state have a durable, reviewable authority."
+      ],
+      "position": "Existing durable database and control and managed services; running on the shared host."
+    },
+    {
+      "id": "appport",
+      "product": "appport",
+      "kicker": "Application interface",
+      "question": "What can be done?",
+      "tagline": "The contract for what an application can do.",
+      "responsibility": "Define discoverable, explicit, enforceable capabilities that applications and agents can invoke.",
+      "notes": ["AppPort is not an API documentation system. It is a semantic, authority-aware capability catalog."],
+      "capabilities": [
+        "Capability registration and discovery.",
+        "Explicit input and output contracts.",
+        "Invocation.",
+        "Authorization hooks and boundaries.",
+        "Capability composition.",
+        "Human and agent access to application functionality.",
+        "Cross-technology capability contracts."
+      ],
+      "independent": [
+        "An existing application can expose its functionality through AppPort without being built with FeltKit.",
+        "An agent can discover and invoke capabilities without understanding the application's internal implementation."
+      ],
+      "composes": [
+        { "id": "feltdb", "how": "Capabilities operate on authoritative application state." },
+        { "id": "authboundry", "how": "Capability execution is subject to authority." },
+        { "id": "appport-services", "how": "Services are exposed as reusable capabilities." },
+        { "id": "resolver", "how": "Capabilities can use dynamically resolved dependencies." },
+        { "id": "feltkit", "how": "Developers define, register and operate application capabilities." }
+      ],
+      "value": [
+        "Applications become understandable and usable by more than their original developers.",
+        "Instead of reverse-engineering an application's internal APIs, humans and agents interact with explicit, discoverable contracts.",
+        "Applications also become more portable across languages and implementation technologies."
+      ],
+      "position": "Existing capability-contract and SDK foundation; some application-facing authorization integration gaps have been identified."
+    },
+    {
+      "id": "appport-services",
+      "partOf": "appport",
+      "name": "AppPort Services",
+      "mark": "SV",
+      "kicker": "Reusable functionality",
+      "question": "What functionality is reusable?",
+      "tagline": "Common application infrastructure delivered as capabilities.",
+      "responsibility": "Provide reusable functionality that applications would otherwise repeatedly implement, integrate and maintain.",
+      "services": [
+        ["Files", "File operations and storage integration"],
+        ["Notifications", "Deliver application notifications"],
+        ["Configuration", "Manage application configuration"],
+        ["Jobs", "Background and asynchronous work"],
+        ["Webhooks", "Event delivery and external integration"],
+        ["API keys", "Application integration credentials"],
+        ["Intelligence", "Intelligence and model-related capabilities"]
+      ],
+      "independent": [
+        "Applications can consume services without adopting the whole FeltKit development experience.",
+        "Each service can be used through its own contract and integration boundary."
+      ],
+      "composes": [
+        { "id": "appport", "how": "Services become discoverable and invocable capabilities." },
+        { "id": "authboundry", "how": "Access and authority are constrained." },
+        { "id": "feltdb", "how": "Durable service state and records." },
+        { "id": "resolver", "how": "Service dependencies and endpoints can change without rebuilding applications." },
+        { "id": "feltkit", "how": "Services are available as part of the developer experience." }
+      ],
+      "value": [
+        "Developers stop rebuilding the same operational plumbing in every application.",
+        "Common infrastructure becomes a reusable platform capability rather than application-owned code."
+      ],
+      "position": "Existing reusable services and integration surface."
+    },
+    {
+      "id": "authboundry",
+      "product": "authboundry",
+      "kicker": "Authority",
+      "question": "Who can do it?",
+      "tagline": "Who can do what, on whose behalf, and under what conditions.",
+      "responsibility": "Establish and enforce authority boundaries for humans, applications, services and agents.",
+      "capabilities": [
+        "Identity and principal representation.",
+        "Authorization.",
+        "Delegated authority.",
+        "Resource and capability access decisions.",
+        "Scope and permission boundaries.",
+        "Evaluation of whether a requested operation is permitted."
+      ],
+      "independent": [
+        "AuthBoundry can govern access to an application or service that does not use FeltKit.",
+        "It is a distinct authority system, not something embedded into every application's business logic."
+      ],
+      "composes": [
+        { "id": "appport", "how": "Governs capability invocation." },
+        { "id": "feltdb", "how": "Protects access to durable state." },
+        { "id": "appboundry", "how": "Governs deployment and execution operations." },
+        { "id": "intent", "how": "Establishes the authority under which service actions occur." },
+        { "id": "agents", "how": "Constrains what an agent can actually execute." }
+      ],
+      "value": [
+        "Applications can expose functionality to agents and external systems without giving them unrestricted access.",
+        "This matters more as agents become operational actors rather than sources of suggestions."
+      ],
+      "position": "Distinct authority architecture; full end-to-end integration must be evidenced."
+    },
+    {
+      "id": "appboundry",
+      "product": "appboundry",
+      "kicker": "Execution boundary",
+      "question": "Where does it run?",
+      "tagline": "Where an application artifact becomes a running application.",
+      "responsibility": "Own the lifecycle of immutable application artifacts and their execution.",
+      "notes": ["AppBoundry deploys an artifact, not a source repository."],
+      "capabilities": [
+        "Artifact packaging and registration.",
+        "Artifact integrity verification.",
+        "Immutable application versions.",
+        "Deployment lifecycle management.",
+        "Runtime execution.",
+        "Execution-host registration and observation.",
+        "Runtime health and execution evidence.",
+        "Recovery and lifecycle transitions."
+      ],
+      "artifact": {
+        "caption": "The intended artifact structure",
+        "code": "application.app\n├── manifest.json\n├── module.wasm\n└── assets/"
+      },
+      "independent": [
+        "An application can be packaged and deployed through AppBoundry without being developed in FeltKit.",
+        "AppBoundry does not require a particular development framework or source repository. That is a deliberate architectural choice."
+      ],
+      "composes": [
+        { "id": "feltdb", "how": "Deployment state and lifecycle records." },
+        { "label": "Object storage", "href": "/stack/#infrastructure", "how": "Artifact bytes." },
+        { "id": "authboundry", "how": "Authority over deployment and execution." },
+        { "id": "resolver", "how": "Dependencies are resolved at runtime." },
+        { "id": "appport", "how": "Running applications expose capabilities." },
+        { "id": "feltkit", "how": "Developer workflows build, verify, package and deploy artifacts." }
+      ],
+      "value": [
+        "Developers can change how source is developed without changing the deployment contract.",
+        "They can build elsewhere, package an artifact, and deploy it through the same execution boundary.",
+        "Application development is separated from application operation."
+      ],
+      "position": "Artifact and deployment implementation and platform services; running on the shared host."
+    },
+    {
+      "id": "resolver",
+      "name": "Resolver",
+      "mark": "RS",
+      "kicker": "Runtime resolution",
+      "question": "What does it depend on?",
+      "tagline": "DNS for everything that changes.",
+      "responsibility": "Resolve logical references into their current operational targets.",
+      "reference": {
+        "code": "ref://prod/chat/model",
+        "text": "An application refers to a stable logical identity, not a hardcoded provider, model, endpoint or credential."
+      },
+      "capabilities": [
+        "Named logical references.",
+        "Runtime resolution.",
+        "Provider and endpoint selection.",
+        "Model and agent indirection.",
+        "Configuration and credential indirection.",
+        "Switching implementations without rebuilding or restarting the application."
+      ],
+      "independent": [
+        "Resolver can manage changing dependencies for applications outside FeltKit and AppBoundry.",
+        "It is useful anywhere software needs stable references to replaceable infrastructure."
+      ],
+      "composes": [
+        { "id": "appboundry", "how": "Resolves dependencies when applications execute." },
+        { "id": "appport", "how": "Resolves dependencies used by capabilities." },
+        { "id": "appport-services", "how": "Resolves service endpoints and configurations." },
+        { "id": "feltdb", "how": "Persists authoritative configuration and reference state." },
+        { "id": "intent", "how": "Resolves the provider or target used by deterministic operations." }
+      ],
+      "value": [
+        "The application is no longer tightly coupled to the provider, endpoint or implementation it currently uses.",
+        "Infrastructure can change underneath an application instead of the application being repeatedly changed and redeployed."
+      ],
+      "position": "Established product responsibility; design capability is being separated from verified runtime coverage."
+    },
+    {
+      "id": "intent",
+      "name": "Intent",
+      "mark": "IN",
+      "kicker": "Deterministic execution",
+      "question": "How is work executed?",
+      "tagline": "Turn an authorized intent into a controlled operation.",
+      "responsibility": "Provide a deterministic service boundary for carrying out defined operations through explicit providers and authority.",
+      "notes": ["Intent is not another source of truth, and not an opaque autonomous agent."],
+      "capabilities": [
+        "Deterministic provider selection and execution.",
+        "Explicit service contracts.",
+        "Authority-token-based execution.",
+        "Integration with durable state.",
+        "Separation between request, authorization and execution.",
+        "Provider abstraction."
+      ],
+      "independent": [
+        "Intent can be called as a service without the full FeltKit stack.",
+        "It executes its supported operations through its own service boundary, with FeltDB-backed authority and state."
+      ],
+      "composes": [
+        { "id": "feltdb", "how": "Authoritative persistence." },
+        { "id": "authboundry", "how": "Authorized operations." },
+        { "id": "resolver", "how": "Resolves the operational provider and target." },
+        { "id": "appport", "how": "Makes Intent functionality available to applications and agents." },
+        { "id": "feltkit", "how": "Provides an integrated application development and operation experience." }
+      ],
+      "value": [
+        "Business operations become explicit, repeatable and reviewable rather than hidden inside application-specific integration code."
+      ],
+      "position": "Existing deterministic service; running on the shared host."
+    },
+    {
+      "id": "feltkit",
+      "product": "feltkit",
+      "kicker": "Product experience",
+      "question": "How is it all assembled and operated?",
+      "tagline": "The way developers assemble and operate applications on the stack.",
+      "responsibility": "Make the capabilities of the underlying infrastructure usable through one coherent developer workflow.",
+      "notes": ["FeltKit is the integration and workflow layer, not the owner of every underlying responsibility. It uses the other capabilities; it does not own them."],
+      "capabilities": [
+        "Application creation and development.",
+        "FeltDB integration.",
+        "AppPort capability definition.",
+        "Service integration.",
+        "Agent-facing application functionality.",
+        "Build and verification.",
+        "Artifact packaging.",
+        "Deployment through AppBoundry.",
+        "Application operation and inspection.",
+        "Studio, CLI and MCP developer surfaces."
+      ],
+      "independent": [
+        "FeltKit is a developer platform with its own workflow and developer experience.",
+        "Its full value comes from composing the underlying products rather than reimplementing them."
+      ],
+      "composes": [
+        { "id": "feltdb", "how": "Application state, integrated into the developer workflow." },
+        { "id": "appport", "how": "Developers define, register and operate capabilities." },
+        { "id": "appport-services", "how": "Services are available as part of the developer experience." },
+        { "id": "appboundry", "how": "Builds, verifies, packages and deploys artifacts." },
+        { "id": "intent", "how": "Controlled operations within the integrated experience." }
+      ],
+      "value": [
+        "A developer gets an integrated way to assemble, deploy and operate an application without individually engineering and maintaining every supporting infrastructure component.",
+        "This is where the economic benefit becomes visible."
+      ],
+      "position": "Integrated developer platform; some developer-facing workflows and gaps remain."
+    }
+  ],
+  "agents": {
+    "lede": "The agent architecture is not another product alongside the others. It is a cross-cutting way of operating the stack's capabilities.",
+    "parts": [
+      { "id": "chip", "name": "Chip", "responsibility": "Deterministic execution loop, planning, tools, sessions, recovery", "value": "Execution is controlled and inspectable" },
+      { "id": "fx", "name": "FX", "responsibility": "Inference and model interaction", "value": "Models provide reasoning without owning system authority" },
+      { "id": "pax", "name": "PAX", "responsibility": "Evidence and provenance", "value": "Operations can be evaluated and reviewed" }
+    ],
+    "uses": [
+      { "id": "appport", "responsibility": "Discoverable capabilities", "value": "Agents can understand available operations" },
+      { "id": "authboundry", "responsibility": "Authority", "value": "Agents cannot exceed delegated permissions" },
+      { "id": "feltdb", "responsibility": "Durable records", "value": "Agent actions and outcomes can be grounded in persistent state" },
+      { "id": "resolver", "responsibility": "Dynamic dependencies", "value": "Agent infrastructure can change without rewriting applications" }
+    ],
+    "principle": "An agent is something that does work on someone's behalf. It does not have to be an LLM.",
+    "principleLede": "The deterministic execution system owns the workflow. The model assists with reasoning and adaptation.",
+    "rules": [
+      "Model output is not execution authority.",
+      "A proposed action is not an executed action.",
+      "An executed action is not automatically a successful outcome.",
+      "Evidence establishes what actually happened.",
+      "Durable state records what the system accepts as authoritative."
+    ],
+    "closing": "This is how the agent architecture reinforces the rest of Boundry rather than becoming a separate, model-dependent product.",
+    "position": "Agent execution and evidence architecture; evaluated separately from application-platform maturity."
+  },
+  "lifecycle": [
+    { "step": "Build", "refs": ["feltkit"], "text": "The developer defines the application, its data, functionality and dependencies." },
+    { "step": "Establish state", "refs": ["feltdb"], "text": "Application data, records and durable state have an authoritative home." },
+    { "step": "Define capabilities", "refs": ["appport"], "text": "Application functionality becomes discoverable and invocable through explicit contracts." },
+    { "step": "Establish authority", "refs": ["authboundry"], "text": "Humans, services and agents receive appropriate permissions and delegated authority." },
+    { "step": "Use services", "refs": ["appport-services", "intent"], "text": "Applications consume reusable operational functionality and execute controlled operations." },
+    { "step": "Package and deploy", "refs": ["appboundry"], "text": "The application becomes an immutable artifact, and is verified, registered and deployed." },
+    { "step": "Resolve", "refs": ["resolver"], "text": "Runtime references resolve to the actual dependencies, providers, endpoints and models." },
+    { "step": "Execute and observe", "refs": ["appboundry", "feltdb", "pax"], "text": "Operations execute, runtime health is observed, and evidence is retained." }
+  ],
+  "lifecycleResult": "An application that can be developed, deployed, operated, extended and used by humans and agents, without the application itself owning all the infrastructure underneath it.",
+  "example": {
+    "title": "Supplier invoices",
+    "lede": "An illustrative business application that manages supplier invoices. It describes how responsibilities divide; it is not a customer deployment.",
+    "without": [
+      "Database and transaction handling",
+      "User authentication and permissions",
+      "File uploads and storage",
+      "Background jobs",
+      "Notifications",
+      "Webhooks",
+      "AI model integration",
+      "Agent tools",
+      "Deployment and runtime management",
+      "Configuration and secret management",
+      "Provider switching",
+      "Audit and operational evidence"
+    ],
+    "with": [
+      ["Store invoices", ["feltdb"]],
+      ["Define invoice operations", ["appport"]],
+      ["Authorize invoice approval", ["authboundry"]],
+      ["Store invoice attachments", [{ "id": "appport-services", "label": "AppPort Files" }]],
+      ["Notify approvers", [{ "id": "appport-services", "label": "AppPort Notifications" }]],
+      ["Process invoices asynchronously", [{ "id": "appport-services", "label": "AppPort Jobs" }, "intent"]],
+      ["Connect accounting systems", ["appport", { "id": "appport-services", "label": "AppPort Webhooks" }]],
+      ["Use an AI model", ["resolver"]],
+      ["Let an agent process invoices", ["chip", "fx", "appport", "authboundry"]],
+      ["Deploy the application", ["appboundry"]],
+      ["Build and operate it", ["feltkit"]],
+      ["Prove what happened", ["feltdb", "pax"]]
+    ],
+    "owned": "The developer still owns the business logic: what makes an invoice valid, which approvals are required, and how the business operates. Boundry removes the need to own the supporting infrastructure. That is the difference between reducing development effort and reducing ownership."
+  },
+  "independence": {
+    "lede": "A product should have a useful purpose without requiring every other product to exist. Composition should create additional value, not artificial dependencies.",
+    "rows": [
+      ["feltdb", "Yes", "Durable authority"],
+      ["appport", "Yes", "Application capabilities"],
+      ["appport-services", "Yes", "Reusable functionality"],
+      ["authboundry", "Yes", "Authority and delegation"],
+      ["appboundry", "Yes", "Artifact deployment and execution"],
+      ["resolver", "Yes", "Replaceable dependencies"],
+      ["intent", "Yes", "Deterministic operations"],
+      ["feltkit", "Yes, as a developer workflow", "Integrated application assembly and operation"],
+      [["chip", "fx"], "Yes, as agent infrastructure", "Controlled agent execution"],
+      ["pax", "Yes, as evidence infrastructure", "Verifiable operations"]
+    ],
+    "examples": [
+      "A FeltDB customer does not need AppBoundry.",
+      "An AppBoundry customer does not need FeltKit.",
+      "An AppPort customer does not need to migrate their database to FeltDB.",
+      "A Resolver customer does not need to adopt Boundry's deployment system.",
+      "An agent can use AppPort capabilities without being built on Boundry's agent implementation."
+    ],
+    "closing": "Each product can also improve independently without forcing changes throughout the ecosystem."
+  },
+  "levels": [
+    {
+      "title": "Individual capability value",
+      "lede": "Each product solves an infrastructure problem.",
+      "items": [
+        ["feltdb", "removes persistence infrastructure ownership."],
+        ["appport", "removes capability integration ambiguity."],
+        ["authboundry", "removes embedded authorization complexity."],
+        ["appboundry", "removes deployment and runtime coupling."],
+        ["resolver", "removes dependency coupling."],
+        ["appport-services", "remove repeated infrastructure implementation."],
+        ["intent", "removes opaque operational integration."]
+      ]
+    },
+    {
+      "title": "Composition value",
+      "lede": "The products work together to remove integration ownership.",
+      "text": "Developers no longer need to independently connect, secure, coordinate and maintain every infrastructure subsystem. The boundaries are explicit, and each component has an authoritative responsibility."
+    },
+    {
+      "title": "Ecosystem value",
+      "lede": "Reduced application ownership.",
+      "text": "Applications can change without unnecessary reconstruction. Infrastructure can change without rebuilding applications. Agents can operate applications without unrestricted access. Models and providers can change without becoming architectural dependencies. This is where the ecosystem becomes worth more than the sum of its products."
+    }
+  ],
+  "boundaries": {
+    "lede": "These separations are a competitive architectural advantage only if they are consistently enforced in code.",
+    "rows": [
+      [["feltdb"], ["appport"], "FeltDB vs AppPort", "State authority is not capability authority."],
+      [["appport"], ["authboundry"], "AppPort vs AuthBoundry", "Discovering an operation is not permission to execute it."],
+      [["authboundry"], ["intent"], "AuthBoundry vs Intent", "Permission is not execution."],
+      [["appboundry"], ["resolver"], "AppBoundry vs Resolver", "Running an artifact is not resolving its dependencies."],
+      [["feltkit"], [], "FeltKit vs the underlying products", "Developer experience is not infrastructure ownership."],
+      [["appboundry"], [], "Artifact vs repository", "A deployable application is not its source development environment."],
+      [["fx"], ["chip"], "Model output vs execution", "Reasoning is not an authorized action."],
+      [["pax"], [], "Evidence vs assertion", "A claim about execution is not proof of execution."],
+      [[], [], "Infrastructure vs product", "The current hosting implementation is not the product contract."]
+    ],
+    "classes": [
+      { "title": "Product layer", "refs": ["feltkit", "feltdb", "appport", "appport-services", "authboundry", "appboundry", "resolver", "intent"] },
+      { "title": "Agent and evidence architecture", "refs": ["chip", "fx", "pax"] },
+      { "title": "Presentation layer", "items": ["Studio", "CLI", "MCP", "Stack UI"], "text": "Shared presentation renders supplied data. It does not acquire application state, authentication, execution or network responsibilities, so it connects the products without creating operational coupling." },
+      { "title": "Deployment and operational substrate", "items": ["Hetzner", "Containers", "Object storage", "Caddy", "Networking", "Host management"], "text": "Hetzner is the current hosting choice, not the definition of AppBoundry or FeltDB." }
+    ]
+  },
+  "evidence": {
+    "lede": "The architecture is a durable representation of the system. Implementation evidence establishes what is actually real. Not every box is equally mature, and this map does not pretend otherwise.",
+    "classifications": [
+      ["Designed", "The contract and responsibility are defined."],
+      ["Implemented", "Code exists, and tests demonstrate behavior."],
+      ["Verified operationally", "A real deployment and end-to-end evidence demonstrate behavior."]
+    ],
+    "caveats": [
+      "A healthy platform container is not proof that every product capability is production-ready.",
+      "A passing unit test is not proof of an end-to-end deployment."
+    ],
+    "notYet": "Positions below are stated in words. Per-capability classification as designed, implemented or operationally verified is not yet published on this site; until it is, no capability here should be read as operationally verified."
+  }
+}

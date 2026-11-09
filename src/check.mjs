@@ -42,6 +42,30 @@ for (const file of pages) {
   need((html.match(/<h1[\s>]/g) || []).length === 1, "exactly one h1");
   need(/<main id="main"/.test(html), "main landmark the skip link targets");
 }
+// Every internal link resolves to a built page, and every #fragment to an id on it.
+const idsOf = new Map(pages.map((f) => [f, new Set([...readFileSync(f, "utf8").matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]))]));
+const resolve = (path) => {
+  const file = path.endsWith("/") ? join(dist, path, "index.html") : join(dist, path);
+  try { return statSync(file).isFile() ? file : null; } catch { return null; }
+};
+for (const file of pages) {
+  const page = file.slice(dist.length);
+  for (const [, href] of readFileSync(file, "utf8").matchAll(/href="([^"]+)"/g)) {
+    if (/^(https?:|mailto:)/.test(href)) continue;
+    const [path, frag] = href.replace(/&amp;/g, "&").split("#");
+    const target = path === "" ? file : path.startsWith("/") ? resolve(path.split("?")[0]) : null;
+    if (!target) { failures.push(`${page}: broken link ${href}`); continue; }
+    if (frag && !idsOf.get(target)?.has(frag)) failures.push(`${page}: link ${href} points to a missing #${frag}`);
+  }
+}
+// Every stack map page carries breadcrumbs and the stack map navigation, and is in it.
+const stackPages = pages.filter((f) => f.slice(dist.length).startsWith("/stack/"));
+for (const file of stackPages) {
+  const html = readFileSync(file, "utf8");
+  const page = file.slice(dist.length).replace(/index\.html$/, "");
+  if (!html.includes('class="stack-breadcrumbs"')) failures.push(`${page}: stack map breadcrumbs`);
+  if (!html.includes(`<a href="${page}" aria-current="page">`)) failures.push(`${page}: not marked current in the stack map navigation`);
+}
 if (failures.length) {
   console.error(`Site check failed:\n  ${failures.join("\n  ")}`);
   process.exit(1);

@@ -29,6 +29,8 @@ const brand = JSON.parse(readFileSync(join(ui, "brand/brand.json"), "utf8"));
 const site = JSON.parse(readFileSync(join(root, "content/site.json"), "utf8"));
 const NPM_NAME = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/;
 const { products } = JSON.parse(readFileSync(join(root, "content/products.json"), "utf8"));
+const stack = JSON.parse(readFileSync(join(root, "content/stack.json"), "utf8"));
+const { stackPages } = await import(pathToFileURL(join(root, "src/stack.mjs")).href);
 const YEAR = new Date().getFullYear();
 
 // ---------------------------------------------------------------- validation
@@ -105,6 +107,7 @@ const NAV = [
   ["/", "Home"],
   ["/ecosystem/", "Ecosystem"],
   ["/architecture/", "Architecture"],
+  ["/stack/", "Stack map"],
   ["/about/", "About"],
   ["/investors/", "Investors"],
   ["/contact/", "Contact"],
@@ -113,7 +116,8 @@ const NAV = [
 function layout({ path, title, description, body }) {
   const fullTitle = path === "/" ? `${site.name} — ${site.tagline.replace(/\.$/, "")}` : `${title} — ${site.name}`;
   const url = site.origin + path;
-  const navigation = NAV.map(([href, label]) => ({ label, href, current: href === path }));
+  // A section's entry stays current on its subpages (e.g. /stack/feltdb/ under Stack map).
+  const navigation = NAV.map(([href, label]) => ({ label, href, current: href === path || (href !== "/" && path.startsWith(href)) }));
   const jsonld =
     path === "/"
       ? `<script type="application/ld+json">${JSON.stringify({
@@ -159,7 +163,7 @@ ${shared.SiteFooter({
   tagline: site.tagline,
   year: YEAR,
   columns: [
-    { title: "Company", links: [["/ecosystem/", "Ecosystem"], ["/architecture/", "Architecture"], ["/about/", "About"], ["/investors/", "Investors"]].map(([href, label]) => ({ label, href })) },
+    { title: "Company", links: [["/ecosystem/", "Ecosystem"], ["/architecture/", "Architecture"], ["/stack/", "Stack map"], ["/about/", "About"], ["/investors/", "Investors"]].map(([href, label]) => ({ label, href })) },
     { title: "Contact", links: [{ label: "Contact", href: "/contact/" }, { label: site.contact.email, href: `mailto:${site.contact.email}` }] },
   ],
 })}
@@ -341,7 +345,7 @@ pages.push({
     <div class="eyebrow">Architecture</div>
     <h2>Distinct responsibilities, not overlapping products.</h2>
     <p class="lede">State lives in FeltDB. Capabilities and services live in AppPort. FeltKit composes them into one product; AppBoundry and AuthBoundry extend the same foundation.</p>
-    <p><a class="textlink" href="/architecture/">See the architecture →</a></p>
+    <p><a class="textlink" href="/architecture/">See the architecture →</a> &nbsp; <a class="textlink" href="/stack/">Open the stack map →</a></p>
   </div>
   ${archDiagram()}
 </div></section>
@@ -381,6 +385,7 @@ pages.push({
       <div class="desc"><p>${esc(p.summary)}</p></div>
       <dl>
         <dt>Responsibility</dt><dd>${esc(p.responsibility)}</dd>
+        <dt>Stack map</dt><dd><a href="/stack/${p.id}/">${esc(p.name)} in the stack</a></dd>
         <dt>Website</dt><dd>${p.url ? `<a class="ext" href="${p.url}" rel="noopener">${host(p.url)}</a>` : `<span class="muted">No separate website</span>`}</dd>
         <dt>On npm</dt><dd>${p.packages?.length ? `<ul class="pkgs">${p.packages.map((pkg) => `<li>${npmLink(pkg)}<span>${esc(pkg.purpose)}</span></li>`).join("")}</ul>` : `<span class="muted">None published</span>`}</dd>
       </dl>
@@ -398,7 +403,7 @@ pages.push({
   <div class="prose">
     <p>The ecosystem is organized by responsibility rather than by feature. FeltDB owns application state. AppPort owns capabilities and the operational services applications need. FeltKit composes them into one product. AppBoundry and AuthBoundry extend the same foundation to portable execution, and to authority and delegation.</p>
     <p>That separation is what lets a team adopt a single component without taking on the whole platform — and what lets the ecosystem grow by adding new responsibilities rather than by enlarging existing products.</p>
-    <p style="margin-top:1.4em"><a class="textlink" href="/architecture/">Explore the architecture →</a></p>
+    <p style="margin-top:1.4em"><a class="textlink" href="/architecture/">Explore the architecture →</a> &nbsp; <a class="textlink" href="/stack/">Open the stack map →</a></p>
   </div>
 </div></section>
 
@@ -464,6 +469,17 @@ pages.push({
     <p><strong>FeltKit</strong> is the first integrated product: FeltDB and AppPort, preassembled into an application stack that agents can operate.</p>
     <p><strong>AppBoundry</strong> runs portable application artifacts inside a controlled boundary.</p>
     <p><strong>AuthBoundry</strong> governs authority and delegation for people and agents.</p>
+  </div>
+</div></section>
+
+<section class="section"><div class="wrap split">
+  <div style="display:grid;gap:18px">
+    <div class="eyebrow">Go deeper</div>
+    <h2>The full stack map.</h2>
+  </div>
+  <div class="prose">
+    <p>This page shows the five products. The <a href="/stack/">stack map</a> goes a level deeper: every component of the stack, including AppPort Services, Resolver, Intent and the agent and evidence layer, with its responsibility, what it composes with, and its current implementation position.</p>
+    <p style="margin-top:1.4em"><a class="textlink" href="/stack/">Open the stack map →</a> &nbsp; <a class="textlink" href="/stack/composition/">How it composes →</a> &nbsp; <a class="textlink" href="/stack/evidence/">Evidence map →</a></p>
   </div>
 </div></section>
 
@@ -572,7 +588,7 @@ pages.push({
       .join("")}
     </tbody>
   </table></div>
-  <p class="note" style="margin-top:24px">Detailed technical status, demonstrations, and evidence of working functionality for each product are provided directly in investment discussions. This page intentionally contains no customer, revenue, funding, partnership, or market-size claims.</p>
+  <p class="note" style="margin-top:24px">Detailed technical status, demonstrations, and evidence of working functionality for each product are provided directly in investment discussions. This page intentionally contains no customer, revenue, funding, partnership, or market-size claims. The <a href="/stack/evidence/">evidence map</a> states the known implementation position of every stack component.</p>
 </div></section>
 
 <section class="section" id="opportunity"><div class="wrap">
@@ -661,6 +677,16 @@ pages.push({
 </div></section>
 `,
 });
+
+// Stack map (/stack/): content/stack.json, rendered by src/stack.mjs.
+{
+  const result = stackPages({ stack, products, site, shared, esc, mark, productAttr, host, npmLink, ctaBand });
+  if (result.errors.length) {
+    console.error("Build failed:\n  " + result.errors.join("\n  "));
+    process.exit(1);
+  }
+  pages.push(...result.pages);
+}
 
 // 404
 const notFound = {

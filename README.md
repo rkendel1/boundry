@@ -8,7 +8,7 @@ Boundry design foundation ([rkendel1/stack-ui](https://github.com/rkendel1/stack
 
 ```bash
 node src/build.mjs                 # writes ./dist (fails if vendor/stack-ui does not match SHA256SUMS)
-node src/check.mjs                 # every page has the shared header, footer, theme control and product links
+node src/check.mjs                 # shared header/footer, theme control, product links, no broken internal links or #fragments
 node vendor/stack-ui/conformance.mjs --company --html dist --css src/styles.css   # design-foundation conformance
 python3 -m http.server 8000 -d dist
 ```
@@ -35,6 +35,7 @@ Add `boundry.company` (and `www.boundry.company` redirecting to it) under Projec
 | Product accents, the Boundry mark, the shared portfolio, header, footer, tokens | `vendor/stack-ui/` (upgrade by replacing the directory with a newer release) |
 | Company settings, contact email, inquiry types, architecture layout | `content/site.json` |
 | Page templates and copy | `src/build.mjs` |
+| Stack map (`/stack/`): components, layers, composition, boundaries, evidence | `content/stack.json`, rendered by `src/stack.mjs` |
 | Site styles (local names mapped to foundation tokens at the top) | `src/styles.css` |
 | Vercel deployment config | `vercel.json` |
 | Extra static files copied verbatim (e.g. og images) | `static/` |
@@ -48,6 +49,10 @@ Add `boundry.company` (and `www.boundry.company` redirecting to it) under Projec
 3. Run the build. The product appears on Home, Ecosystem, Architecture, Investors, Contact and the footer.
 
 The build fails on missing fields, duplicate ids, non-https URLs, unknown statuses, or architecture references to unknown products. It prints notes for products with no status or no diagram placement.
+
+## Stack map
+
+`/stack/` is organized as three maps: the **product map** (a page per component, plus the agent and evidence layer), the **composition map** (lifecycle, worked example, composition matrix, boundaries) and the **evidence map** (known implementation position). Components that are Boundry products take their name, site, npm packages and status from `content/products.json`; Resolver, Intent, AppPort Services and Chip / FX / PAX are described only in `content/stack.json`, because they are not in the shared portfolio. Every id referenced in `stack.json` must resolve or the build fails. Update `asOf` and each `position` when the implementation position changes; a position is not a claim of operational verification.
 
 ## Before launch — needs confirmation
 
