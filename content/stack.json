@@ -528,17 +528,18 @@
         "command": "chip",
         "requires": "Node.js 24 or later",
         "license": "Apache-2.0",
-        "origin": "Chip is a distribution of eve, Vercel's open-source framework for durable backend agents, published under the Apache License 2.0 with Vercel's notices retained.",
-        "summary": "A filesystem-first framework for durable backend agents. An agent is a directory: instructions and procedures in Markdown; tools, hooks, channels, schedules and the sandbox in TypeScript.",
+        "origin": "Chip began as eve, Vercel's open-source agent framework (Apache-2.0, with Vercel's notices retained), and has been reworked to decouple it from Vercel. Vercel remains one supported target. Some eve-era names inside the package were kept, because renaming them would have disrupted existing projects.",
+        "summary": "A filesystem-first framework for durable backend agents that run anywhere. An agent is a directory: instructions and procedures in Markdown; tools, hooks, channels, schedules and the sandbox in TypeScript.",
         "facts": [
           "Durable message runs and follow-up turns, addressed by immutable session IDs.",
           "Inspectable compiled artifacts, and a runtime that keeps channels, harnesses and workflow execution separate.",
-          "Per-agent sandbox, approval policies and tool restrictions. These safeguards are the deployer's to configure; they are not strict by default.",
-          "Runs an agent's model through FX with fx() from @appport/chip/models/fx."
+          "Runs on self-hosted servers with Docker, microsandbox or just-bash sandboxes, or on Vercel as one supported target. No Vercel package is a dependency.",
+          "Runs models through FX with fx() from @appport/chip/models/fx. Agents that use a direct or local provider do not need the Vercel AI Gateway.",
+          "Per-agent sandbox, approval policies and tool restrictions. These safeguards are the deployer's to configure; they are not strict by default."
         ],
         "responsibility": "Durable agent execution: runs, sessions, tools, sandbox, recovery",
         "value": "Execution is durable and inspectable",
-        "position": "Published on npm as @appport/chip, a distribution of Vercel's eve; requires Node.js 24."
+        "position": "Published on npm as @appport/chip; derived from eve and decoupled from Vercel. Requires Node.js 24."
       },
       {
         "id": "fx",
