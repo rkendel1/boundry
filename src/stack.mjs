@@ -42,6 +42,14 @@ export function stackPages({ stack, products, site, shared, esc, mark, productAt
   for (const [a, b, label] of stack.boundaries.rows) [...a, ...b].forEach((r) => need(r, `boundary "${label}"`));
   for (const cl of stack.boundaries.classes) (cl.refs ?? []).forEach((r) => need(r, `class "${cl.title}"`));
   for (const u of stack.agents.uses) need(u.id, "agents.uses");
+  const NPM = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/;
+  for (const x of [...stack.components, ...stack.agents.parts]) {
+    if (x.product && x.packages) errors.push(`stack: ${x.id}: packages of a product belong in content/products.json`);
+    for (const pkg of x.packages ?? []) if (!NPM.test(pkg.name ?? "") || !pkg.purpose) errors.push(`stack: ${x.id}: invalid package entry`);
+    if (x.package && !NPM.test(x.package)) errors.push(`stack: ${x.id}: invalid package "${x.package}"`);
+    if (x.source && !/^https:\/\/\S+$/.test(x.source)) errors.push(`stack: ${x.id}: source must be https`);
+  }
+  for (const a of stack.agents.parts) for (const k of ["summary", "responsibility", "value", "position", "install"]) if (!a[k]) errors.push(`stack: agent part ${a.id}: missing "${k}"`);
   if (errors.length) return { errors, pages: [] };
 
   // ---------------------------------------------------------------- fragments
@@ -150,6 +158,16 @@ ${ctaBand("Talk through the stack with Boundry.", "Evaluation, integration and t
     }),
   });
 
+  // How to get a component: its install command and packages (a product's from content/products.json).
+  const pkgList = (pkgs) => `<ul class="pkgs">${pkgs.map((pkg) => `<li>${npmLink(pkg)} <span class="muted">${esc(pkg.purpose)}</span></li>`).join("")}</ul>`;
+  const getIt = (c) => {
+    const pkgs = c.p ? c.p.packages : c.packages;
+    const install = c.p ? c.p.install : c.install;
+    if (c.partOf && !pkgs) return sec("get", "Get it", `<p class="sm-also">Ships in ${link(c.partOf)}; see its packages.</p>`);
+    if (!pkgs?.length) return "";
+    return sec("get", "Get it", `${install ? `<pre class="sm-install"><code>${esc(install)}</code></pre>` : ""}<dl class="sm-kv"><dt>On npm</dt><dd>${pkgList(pkgs)}</dd></dl>`);
+  };
+
   // ---------------------------------------------------------------- components
   for (const c of ordered) {
     const layer = layerOf[c.id];
@@ -184,8 +202,8 @@ ${ctaBand("Talk through the stack with Boundry.", "Evaluation, integration and t
           sec("composes", "Composes with", `<dl class="sm-rel">${(c.composes ?? []).map((r) => `<div><dt>${r.id ? link(r.id) : `<a class="sm-ref" href="${r.href}">${esc(r.label)}</a>`}</dt><dd>${esc(r.how)}</dd></div>`).join("")}</dl>${
             referencedBy.length ? `<p class="sm-also">Also referenced by ${links(referencedBy.map((o) => o.id))}.</p>` : ""}<p class="sm-also"><a class="textlink" href="/stack/composition/#matrix">See the full composition map →</a></p>`),
           sec("value", "Value", `<div class="prose sm-prose">${paras(c.value)}</div>`),
-          sec("position", "Current position", `<dl class="sm-kv"><dt>Known position</dt><dd>${esc(c.position)} <span class="muted">(as of ${esc(stack.asOfLabel)})</span></dd><dt>Published status</dt><dd>${status(c)}</dd>${
-            c.p?.packages?.length ? `<dt>On npm</dt><dd><ul class="pkgs">${c.p.packages.map((pkg) => `<li>${npmLink(pkg)} <span class="muted">${esc(pkg.purpose)}</span></li>`).join("")}</ul></dd>` : ""}</dl><p class="sm-also"><a class="textlink" href="/stack/evidence/">How positions are classified →</a></p>`),
+          getIt(c),
+          sec("position", "Current position", `<dl class="sm-kv"><dt>Known position</dt><dd>${esc(c.position)} <span class="muted">(as of ${esc(stack.asOfLabel)})</span></dd><dt>Published status</dt><dd>${status(c)}</dd></dl><p class="sm-also"><a class="textlink" href="/stack/evidence/">How positions are classified →</a></p>`),
         ].join(""),
       }),
     });
@@ -204,7 +222,10 @@ ${ctaBand("Talk through the stack with Boundry.", "Evaluation, integration and t
       lede: ag.lede,
       body: [
         sec("layer", "The agent layer", `<div class="table-wrap"><table><thead><tr><th scope="col">Component</th><th scope="col">Responsibility</th><th scope="col">Value</th></tr></thead><tbody>${
-          ag.parts.map((a) => `<tr id="${a.id}"><td><strong>${esc(a.name)}</strong></td><td>${esc(a.responsibility)}</td><td>${esc(a.value)}</td></tr>`).join("")}</tbody></table></div>`),
+          ag.parts.map((a) => `<tr><td><a href="#${a.id}"><strong>${esc(a.name)}</strong></a></td><td>${esc(a.responsibility)}</td><td>${esc(a.value)}</td></tr>`).join("")}</tbody></table></div>`),
+        ...ag.parts.map((a) => sec(a.id, a.name, `<p class="sm-strong">${esc(a.summary)}</p>${a.origin ? `<p class="note">${esc(a.origin)}</p>` : ""}${list(a.facts)}
+          ${/^npm /.test(a.install) ? `<pre class="sm-install"><code>${esc(a.install)}</code></pre>` : `<p>${esc(a.install)}</p>`}
+          <dl class="sm-kv">${a.package ? `<dt>On npm</dt><dd>${npmLink({ name: a.package })}</dd>` : ""}${a.source ? `<dt>Source</dt><dd><a class="ext" href="${a.source}" rel="noopener">${esc(a.source.replace(/^https:\/\//, ""))}</a></dd>` : ""}${a.command ? `<dt>Command</dt><dd><code>${esc(a.command)}</code></dd>` : ""}${a.requires ? `<dt>Requires</dt><dd>${esc(a.requires)}</dd>` : ""}<dt>License</dt><dd>${esc(a.license)}</dd><dt>Position</dt><dd>${esc(a.position)}</dd></dl>`)),
         sec("uses", "What agents use from the stack", `<div class="table-wrap"><table><thead><tr><th scope="col">Component</th><th scope="col">Responsibility</th><th scope="col">Value</th></tr></thead><tbody>${
           ag.uses.map((u) => `<tr><td>${link(u.id)}</td><td>${esc(u.responsibility)}</td><td>${esc(u.value)}</td></tr>`).join("")}</tbody></table></div>`),
         sec("principle", "The principle", `<p class="statement">${esc(ag.principle)}</p><p class="sm-lede" style="margin-top:20px">${esc(ag.principleLede)}</p>
@@ -284,8 +305,8 @@ ${ctaBand("Talk through the stack with Boundry.", "Evaluation, integration and t
         sec("classes", "Three independent classifications", `<div class="cols">${ev.classifications.map(([t, d], i) => `<div class="col"><span class="tag">${i + 1}</span><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("")}</div>
           <ul class="sm-list" style="margin-top:24px">${ev.caveats.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`),
         sec("positions", "Known position by component", `<p class="note" style="margin-bottom:24px">${esc(ev.notYet)}</p><div class="table-wrap"><table><thead><tr><th scope="col">Component</th><th scope="col">Layer</th><th scope="col">Known position</th><th scope="col">Published status</th></tr></thead><tbody>${
-          ordered.map((c) => `<tr><td><span class="pname">${cmark(c, "sm")}<a href="${c.href}">${esc(c.name)}</a></span></td><td class="dim">${esc(layerOf[c.id].title)}</td><td>${esc(c.position)}</td><td>${status(c)}</td></tr>`).join("")
-        }<tr><td><a href="${AGENTS}">Chip / FX / PAX</a></td><td class="dim">Cross-cutting</td><td>${esc(ag.position)}</td><td><span class="muted">Not published as separate products</span></td></tr></tbody></table></div>
+          ordered.map((c) => `<tr><td><span class="pname">${cmark(c, "sm")}<a href="${c.href}">${esc(c.name)}</a></span></td><td class="dim">${esc(layerOf[c.id].title)}</td><td>${esc(c.position)}${c.packages ? ` Published on npm as ${c.packages.map(npmLink).join(", ")}.` : ""}</td><td>${status(c)}</td></tr>`).join("")
+        }${ag.parts.map((a) => `<tr><td><a href="${AGENTS}#${a.id}">${esc(a.name)}</a></td><td class="dim">Agent and evidence</td><td>${esc(a.position)}</td><td><span class="muted">Not published as a separate product</span></td></tr>`).join("")}</tbody></table></div>
           <p class="sm-also">Known positions are as of ${esc(stack.asOfLabel)}. Published statuses are the same ones shown on <a href="/ecosystem/">Ecosystem</a> and <a href="/investors/#progress">Investors</a>.</p>`),
       ].join(""),
     }),

@@ -58,6 +58,11 @@ for (const file of pages) {
     if (frag && !idsOf.get(target)?.has(frag)) failures.push(`${page}: link ${href} points to a missing #${frag}`);
   }
 }
+// Every npm package in content/stack.json is linked from its stack map page.
+const stackContent = JSON.parse(readFileSync(join(root, "content/stack.json"), "utf8"));
+const npmOn = (page, name) => readFileSync(join(dist, page, "index.html"), "utf8").includes(`href="https://www.npmjs.com/package/${name}"`);
+for (const c of stackContent.components) for (const pkg of c.packages ?? []) if (!npmOn(`stack/${c.id}`, pkg.name)) failures.push(`/stack/${c.id}/: npm link to ${pkg.name}`);
+for (const a of stackContent.agents.parts) if (a.package && !npmOn("stack/agents", a.package)) failures.push(`/stack/agents/: npm link to ${a.package}`);
 // Every stack map page carries breadcrumbs and the stack map navigation, and is in it.
 const stackPages = pages.filter((f) => f.slice(dist.length).startsWith("/stack/"));
 for (const file of stackPages) {
