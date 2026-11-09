@@ -1,11 +1,20 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "",
+  "installCommand": "npm ci --prefix intelligence --omit=dev --no-audit --no-fund",
   "buildCommand": "node src/build.mjs && node src/check.mjs && node vendor/stack-ui/conformance.mjs --company --html dist --css src/styles.css",
   "outputDirectory": "dist",
   "trailingSlash": true,
   "headers": [
+    {
+      "source": "/api/intelligence/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
@@ -36,5 +45,16 @@
         }
       ]
     }
-  ]
+  ],
+  "rewrites": [
+    {
+      "source": "/api/intelligence/v1/:path*",
+      "destination": "/api/intelligence?__path=:path*"
+    }
+  ],
+  "functions": {
+    "api/intelligence.mjs": {
+      "maxDuration": 30
+    }
+  }
 }

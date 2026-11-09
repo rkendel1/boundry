@@ -1,0 +1,25 @@
+{
+  "name": "@boundry/intelligence",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Boundry Ecosystem Intelligence: event ingestion, durable provenance-preserving storage on FeltDB, and the private owner query API behind boundry.company.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": "./src/index.mjs",
+    "./emitter": "./src/emitter.mjs",
+    "./contract": "./src/contract.mjs"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 test/*.test.mjs"
+  },
+  "dependencies": {
+    "@appport/protocol": "1.5.0",
+    "@feltdb/core": "0.21.0"
+  },
+  "devDependencies": {
+    "@appport/schema": "1.1.6"
+  }
+}
