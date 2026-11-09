@@ -40,6 +40,7 @@ Add `boundry.company` (and `www.boundry.company` redirecting to it) under Projec
 | Vercel deployment config | `vercel.json` |
 | Extra static files copied verbatim (e.g. og images) | `static/` |
 | Ecosystem Intelligence: event contract, ingestion, owner query API (`/api/intelligence/v1/`) | `intelligence/` (see its README), function adapter `api/intelligence.mjs` |
+| Ecosystem Intelligence architecture and ownership audit (Phase 0): decisions, evidence, unresolved questions, implementation sequence; the minimum event contract | `docs/architecture/ecosystem-intelligence.md`, `docs/architecture/ecosystem-events.md` |
 
 ## Adding a product
 
