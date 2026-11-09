@@ -39,6 +39,7 @@ Add `boundry.company` (and `www.boundry.company` redirecting to it) under Projec
 | Site styles (local names mapped to foundation tokens at the top) | `src/styles.css` |
 | Vercel deployment config | `vercel.json` |
 | Extra static files copied verbatim (e.g. og images) | `static/` |
+| Ecosystem Intelligence: event contract, ingestion, owner query API (`/api/intelligence/v1/`) | `intelligence/` (see its README), function adapter `api/intelligence.mjs` |
 
 ## Adding a product
 
@@ -62,3 +63,10 @@ The build fails on missing fields, duplicate ids, non-https URLs, unknown status
 - **AppPort** will not have a website (owner, 2026-11-03; `url: null`). Its card shows "No separate website" and links to its Ecosystem entry and its npm packages.
 - **Logo master file.** The mark in `vendor/stack-ui/brand/` is a vector redraw of the supplied logo; commit the master artwork to stack-ui to replace it.
 - **Theme preference key changed** from `theme` to `stack-ui.theme` (shared by every Boundry site). A visitor's earlier manual choice is not carried over; the default is still the system theme.
+
+## Ecosystem Intelligence
+
+`intelligence/` is Boundry's own backend for ecosystem intelligence: products report structured events, they are stored
+with provenance in FeltDB, and the owner queries them privately. It runs as one Vercel Function in this project; the site
+build above does not use it and stays dependency-free (the function's dependencies are installed into
+`intelligence/node_modules` only). See [`intelligence/README.md`](intelligence/README.md).

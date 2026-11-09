@@ -13,3 +13,15 @@ jobs:
           node-version: 20
       # The same command Vercel runs: build, site check, design-foundation conformance.
       - run: node src/build.mjs && node src/check.mjs && node vendor/stack-ui/conformance.mjs --company --html dist --css src/styles.css
+  intelligence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix intelligence --no-audit --no-fund
+      - run: npm test --prefix intelligence
+      # The Vercel function loads from a production-only install, as deployed.
+      - run: rm -rf intelligence/node_modules && npm ci --prefix intelligence --omit=dev --no-audit --no-fund
+      - run: node --input-type=module -e "const m = await import('./api/intelligence.mjs'); const r = await m.GET(new Request('https://boundry.company/api/intelligence?__path=health')); if (r.status !== 503) process.exit(1);"
