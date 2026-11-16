@@ -5,6 +5,11 @@
   "origin": "https://boundry.company",
   "tagline": "Infrastructure for applications and agents.",
   "description": "Boundry builds infrastructure for applications that people and AI agents both use and operate: FeltDB for application state, AppPort for capabilities and operational services, and FeltKit, the integrated product built on them.",
+  "video": {
+    "_readme": "YouTube video shown on the home page. id is the 11-character video id from the URL.",
+    "id": "Y850VGfaqcw",
+    "title": "Boundry video"
+  },
   "founder": {
     "_readme": "portrait: path to a supplied professional photo placed in ./static (e.g. \"/images/randy-kendel.jpg\"), or null. Never substitute a generated image.",
     "name": "Randy Kendel",

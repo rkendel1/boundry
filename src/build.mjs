@@ -268,6 +268,27 @@ const principlesList = `<ol class="principles">${PRINCIPLES.map(
   ([a, b], i) => `<li><span class="num">${String(i + 1).padStart(2, "0")}</span><span class="over">${a}</span><span class="over-not">${b}</span></li>`
 ).join("")}</ol>`;
 
+function videoSection() {
+  const v = site.video;
+  if (!v || !/^[\w-]{11}$/.test(v.id)) return "";
+  const title = esc(v.title);
+  return `
+<section class="section" id="video"><div class="wrap">
+  <div class="section-head">
+    <div class="eyebrow">Watch</div>
+    <h2>${title}</h2>
+  </div>
+  <div class="video" data-video-id="${v.id}">
+    <a class="video-poster" href="https://www.youtube.com/watch?v=${v.id}" data-video-play aria-label="Play video: ${title}">
+      <img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy" width="480" height="360">
+      <span class="video-play" aria-hidden="true">▶</span>
+    </a>
+  </div>
+  <p class="video-note"><a href="https://www.youtube.com/watch?v=${v.id}">Watch on YouTube</a></p>
+  <script>document.querySelectorAll("[data-video-play]").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();var d=a.parentNode,f=document.createElement("iframe");f.src="https://www.youtube-nocookie.com/embed/"+d.dataset.videoId+"?autoplay=1&rel=0";f.title=${JSON.stringify(v.title)};f.allow="autoplay; encrypted-media; picture-in-picture; fullscreen";f.allowFullscreen=true;d.replaceChildren(f);});});</script>
+</div></section>`;
+}
+
 function founderSection() {
   const f = site.founder;
   if (!f) return "";
@@ -309,6 +330,8 @@ pages.push({
   </div>
   <div class="hero-figure">${heroFigure}</div>
 </div></section>
+
+${videoSection()}
 
 <section class="section"><div class="wrap">
   <div class="section-head">
