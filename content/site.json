@@ -8,7 +8,7 @@
   "video": {
     "_readme": "YouTube video shown on the home page. id is the 11-character video id from the URL.",
     "id": "Y850VGfaqcw",
-    "title": "Boundry video"
+    "title": "Boundry overview"
   },
   "founder": {
     "_readme": "portrait: path to a supplied professional photo placed in ./static (e.g. \"/images/randy-kendel.jpg\"), or null. Never substitute a generated image.",
